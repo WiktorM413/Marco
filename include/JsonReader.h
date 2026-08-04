@@ -1,0 +1,7 @@
+namespace Marco
+{
+	class JsonReader
+	{
+	
+	};
+}
