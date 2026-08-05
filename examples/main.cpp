@@ -1,8 +1,13 @@
 #include <iostream>
+#include <marco/JsonValue.h>
 
 int main()
 {
-	std::cout << "Hello World!" << std::endl;
+	Marco::JsonValue jv;
+
+	jv["name"]["first"] = "Wiktor";
+	
+	std::cout << jv["name"]["first"].AsString().value();
 
 	return 0;
 }
