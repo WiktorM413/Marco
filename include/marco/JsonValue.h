@@ -30,6 +30,13 @@ namespace Marco
 		JsonValue(const char* c);
 		JsonValue(JsonArray arr);
 		JsonValue(JsonObject obj);
+
+		bool IsNull()   const;
+		bool IsBool()   const;
+		bool IsNumber() const;
+		bool IsString() const;
+		bool IsObject() const;
+		bool IsArray()  const;
 		
 		std::expected<bool,                                      JsonError> AsBool()   const;
 		std::expected<double,                                    JsonError> AsNumber() const;

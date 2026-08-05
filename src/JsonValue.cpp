@@ -1,5 +1,6 @@
 #include "marco/JsonValue.h"
 #include "marco/JsonError.h"
+#include <cstddef>
 #include <expected>
 #include <functional>
 #include <variant>
@@ -14,6 +15,36 @@ Marco::JsonValue::JsonValue(const std::string& s):   m_value(s)                 
 Marco::JsonValue::JsonValue(const char*        c):   m_value(c)                      {}
 Marco::JsonValue::JsonValue(JsonArray          arr): m_value(std::move(arr))         {}
 Marco::JsonValue::JsonValue(JsonObject         obj): m_value(std::move(obj))         {}
+
+bool Marco::JsonValue::IsNull() const
+{
+	return std::holds_alternative<std::nullptr_t>(this->m_value);
+}
+
+bool Marco::JsonValue::IsBool() const
+{
+	return std::holds_alternative<bool>(this->m_value);
+}
+
+bool Marco::JsonValue::IsNumber() const
+{
+	return std::holds_alternative<double>(this->m_value);
+}
+
+bool Marco::JsonValue::IsString() const
+{
+	return std::holds_alternative<std::string>(this->m_value);
+}
+
+bool Marco::JsonValue::IsObject() const
+{
+	return std::holds_alternative<JsonObject>(this->m_value);
+}
+
+bool Marco::JsonValue::IsArray() const
+{
+	return std::holds_alternative<JsonArray>(this->m_value);
+}
 
 std::expected<bool, Marco::JsonError> Marco::JsonValue::AsBool() const
 {
