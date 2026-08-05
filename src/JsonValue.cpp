@@ -71,3 +71,17 @@ Marco::JsonValue& Marco::JsonValue::operator[](const std::string& key)
 
 	return std::get<JsonObject>(this->m_value)[key];
 }
+
+std::expected<std::reference_wrapper<const Marco::JsonValue>, Marco::JsonError> Marco::JsonValue::operator[](const std::string& key) const
+{
+	if (auto* obj = std::get_if<JsonObject>(&this->m_value))
+	{
+		auto it = obj->find(key);
+		if (it != obj->end())
+		{
+			return std::cref(it->second);
+		}
+	}
+
+	return std::unexpected(JsonError::InvalidFormat);
+}

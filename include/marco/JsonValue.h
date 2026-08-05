@@ -33,7 +33,8 @@ namespace Marco
 		std::expected<std::reference_wrapper<const JsonObject>,  JsonError> AsObject() const;
 		std::expected<std::reference_wrapper<const JsonArray>,   JsonError> AsArray()  const;
 		
-		JsonValue& operator[](const std::string& key);
+		JsonValue&                                 operator[](const std::string& key);
+		std::expected<std::reference_wrapper<const JsonValue>, JsonError> operator[](const std::string& key) const;
 		
 		using ValueType = std::variant
 		<
