@@ -3,6 +3,8 @@
 
 Marco::JsonReader::JsonReader(): m_valid(false) { }
 
+// TODO: Finish implementing
+
 Marco::JsonReader::JsonReader(const std::string& jsonString)
 {
 	if (jsonString.empty() || jsonString.front() != '{' || jsonString.back() != '}')
