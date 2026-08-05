@@ -1,4 +1,4 @@
-#include "../include/marco/JsonReader.h"
+#include "marco/JsonReader.h"
 #include "marco/JsonError.h"
 
 Marco::JsonReader::JsonReader(): m_valid(false) { }
