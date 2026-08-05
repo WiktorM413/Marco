@@ -18,7 +18,20 @@ namespace Marco
 	class JsonValue
 	{
 	public:
-		std::expected<double, JsonError> AsNumber() const;
+		JsonValue();
+		JsonValue(bool b);
+		JsonValue(double d);
+		JsonValue(const std::string& s);
+		JsonValue(const char* c);
+		JsonValue(JsonArray arr);
+		JsonValue(JsonObject obj);
+		
+		std::expected<bool,        JsonError> AsBool()   const;
+		std::expected<double,      JsonError> AsNumber() const;
+		std::expected<std::string, JsonError> AsString() const;
+		std::expected<JsonObject,  JsonError> AsObject() const;
+		std::expected<JsonArray,   JsonError> AsArray()  const;
+		
 		JsonValue& operator[](const std::string& key);
 		
 		using ValueType = std::variant
