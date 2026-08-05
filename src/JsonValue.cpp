@@ -4,13 +4,15 @@
 #include <variant>
 
 
-Marco::JsonValue::JsonValue(): m_value(nullptr) {}
-Marco::JsonValue::JsonValue(bool               b):   m_value(b)              {}
-Marco::JsonValue::JsonValue(double             d):   m_value(d)              {}
-Marco::JsonValue::JsonValue(const std::string& s):   m_value(s)              {}
-Marco::JsonValue::JsonValue(const char*        c):   m_value(c)              {}
-Marco::JsonValue::JsonValue(JsonArray          arr): m_value(std::move(arr)) {}
-Marco::JsonValue::JsonValue(JsonObject         obj): m_value(std::move(obj)) {}
+Marco::JsonValue::JsonValue(): m_value(nullptr)                                      {}
+Marco::JsonValue::JsonValue(std::nullptr_t): m_value(nullptr)                        {}
+Marco::JsonValue::JsonValue(bool               b):   m_value(b)                      {}
+Marco::JsonValue::JsonValue(double             d):   m_value(d)                      {}
+Marco::JsonValue::JsonValue(int                i):   m_value(static_cast<double>(i)) {}
+Marco::JsonValue::JsonValue(const std::string& s):   m_value(s)                      {}
+Marco::JsonValue::JsonValue(const char*        c):   m_value(c)                      {}
+Marco::JsonValue::JsonValue(JsonArray          arr): m_value(std::move(arr))         {}
+Marco::JsonValue::JsonValue(JsonObject         obj): m_value(std::move(obj))         {}
 
 std::expected<bool, Marco::JsonError> Marco::JsonValue::AsBool() const
 {

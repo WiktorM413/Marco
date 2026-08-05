@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <expected>
 #include <functional>
 #include <map>
@@ -20,8 +21,10 @@ namespace Marco
 	{
 	public:
 		JsonValue();
+		JsonValue(std::nullptr_t);
 		JsonValue(bool b);
 		JsonValue(double d);
+		JsonValue(int i);
 		JsonValue(const std::string& s);
 		JsonValue(const char* c);
 		JsonValue(JsonArray arr);
