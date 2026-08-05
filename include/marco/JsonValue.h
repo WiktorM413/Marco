@@ -1,6 +1,7 @@
 #pragma once
 
 #include <expected>
+#include <functional>
 #include <map>
 #include <string>
 #include <variant>
@@ -26,11 +27,11 @@ namespace Marco
 		JsonValue(JsonArray arr);
 		JsonValue(JsonObject obj);
 		
-		std::expected<bool,        JsonError> AsBool()   const;
-		std::expected<double,      JsonError> AsNumber() const;
-		std::expected<std::string, JsonError> AsString() const;
-		std::expected<JsonObject,  JsonError> AsObject() const;
-		std::expected<JsonArray,   JsonError> AsArray()  const;
+		std::expected<bool,                                      JsonError> AsBool()   const;
+		std::expected<double,                                    JsonError> AsNumber() const;
+		std::expected<std::string,                               JsonError> AsString() const;
+		std::expected<std::reference_wrapper<const JsonObject>,  JsonError> AsObject() const;
+		std::expected<std::reference_wrapper<const JsonArray>,   JsonError> AsArray()  const;
 		
 		JsonValue& operator[](const std::string& key);
 		

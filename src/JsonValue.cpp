@@ -42,21 +42,21 @@ std::expected<std::string, Marco::JsonError> Marco::JsonValue::AsString() const
 	return std::unexpected(JsonError::InvalidFormat);
 }
 
-std::expected<Marco::JsonObject, Marco::JsonError> Marco::JsonValue::AsObject() const
+std::expected<std::reference_wrapper<const Marco::JsonObject>,  Marco::JsonError> Marco::JsonValue::AsObject() const
 {
 	if (auto* p = std::get_if<JsonObject>(&this->m_value))
 	{
-		return *p;
+		return std::cref(*p);
 	}
 
 	return std::unexpected(JsonError::InvalidFormat);
 }
 
-std::expected<Marco::JsonArray, Marco::JsonError> Marco::JsonValue::AsArray() const
+std::expected<std::reference_wrapper<const Marco::JsonArray>, Marco::JsonError> Marco::JsonValue::AsArray() const
 {
 	if (auto* p = std::get_if<JsonArray>(&this->m_value))
 	{
-		return *p;
+		return std::cref(*p);
 	}
 
 	return std::unexpected(JsonError::InvalidFormat);
