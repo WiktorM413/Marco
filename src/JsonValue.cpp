@@ -124,7 +124,7 @@ Marco::JsonValue& Marco::JsonValue::operator[](size_t index)
 {
 	if (!std::holds_alternative<JsonArray>(this->m_value))
 	{
-		this->m_value = JsonObject{};
+		this->m_value = JsonArray{};
 	}
 
 	return std::get<JsonArray>(this->m_value)[index];
@@ -134,7 +134,7 @@ std::expected<std::reference_wrapper<const Marco::JsonValue>, Marco::JsonError> 
 {
 	if (auto* arr = std::get_if<JsonArray>(&this->m_value))
 	{
-		if (index > arr->size())
+		if (index < arr->size())
 		{
 			return std::cref((*arr)[index]);
 		}
