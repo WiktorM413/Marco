@@ -1,6 +1,7 @@
 #include "marco/JsonValue.h"
 #include "marco/JsonError.h"
 #include <expected>
+#include <functional>
 #include <variant>
 
 
@@ -82,6 +83,29 @@ std::expected<std::reference_wrapper<const Marco::JsonValue>, Marco::JsonError> 
 		if (it != obj->end())
 		{
 			return std::cref(it->second);
+		}
+	}
+
+	return std::unexpected(JsonError::InvalidFormat);
+}
+
+Marco::JsonValue& Marco::JsonValue::operator[](size_t index)
+{
+	if (!std::holds_alternative<JsonArray>(this->m_value))
+	{
+		this->m_value = JsonObject{};
+	}
+
+	return std::get<JsonArray>(this->m_value)[index];
+}
+
+std::expected<std::reference_wrapper<const Marco::JsonValue>, Marco::JsonError> Marco::JsonValue::operator[](size_t index) const
+{
+	if (auto* arr = std::get_if<JsonArray>(&this->m_value))
+	{
+		if (index > arr->size())
+		{
+			return std::cref((*arr)[index]);
 		}
 	}
 
