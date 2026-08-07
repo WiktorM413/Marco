@@ -6,7 +6,7 @@
 #include <stdexcept>
 
 
-Marco::JsonReader::JsonReader(): m_error(JsonErrorType::NoError), m_valid(false) { }
+Marco::JsonReader::JsonReader(): m_error(JsonError{JsonErrorType::NoError, 0}), m_valid(false) { }
 
 // TODO: Finish implementing
 
@@ -198,6 +198,8 @@ Marco::JsonError Marco::JsonReader::HandleNumber(Marco::JsonValue& jsonValue, co
 			return Marco::JsonError{JsonErrorType::NoError, index};
 		}
 		
+		index++;
+		
 		value.push_back(jsonString[index]);
 	}
 
@@ -212,6 +214,8 @@ Marco::JsonError Marco::JsonReader::HandleString(Marco::JsonValue& jsonValue, co
 		if (jsonString[index] == '"')
 		{
 			jsonValue = value;
+
+			index++;
 			
 			return Marco::JsonError{JsonErrorType::NoError, index};
 		}
@@ -230,6 +234,8 @@ Marco::JsonError Marco::JsonReader::HandleBool(Marco::JsonValue& jsonValue, cons
 	{
 		if (std::isspace(jsonString[index]) || jsonString[index] == ',' || jsonString[index] == '}' || jsonString[index] == ']')
 		{
+			index++;
+			
 			if (value == "true")
 			{
 				jsonValue = true;
@@ -262,6 +268,8 @@ Marco::JsonError Marco::JsonReader::HandleNull(Marco::JsonValue& jsonValue, cons
 	{
 		if (std::isspace(jsonString[index]) || jsonString[index] == ',' || jsonString[index] == '}' || jsonString[index] == ']')
 		{
+			index++;
+
 			if (value == "null")
 			{
 				jsonValue = nullptr;
