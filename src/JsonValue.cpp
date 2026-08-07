@@ -46,6 +46,16 @@ bool Marco::JsonValue::IsArray() const
 	return std::holds_alternative<JsonArray>(this->m_value);
 }
 
+std::expected<std::nullptr_t, Marco::JsonError> Marco::JsonValue::AsNull() const
+{
+	if (auto* p = std::get_if<std::nullptr_t>(&this->m_value))
+	{
+		return *p;
+	}
+
+	return std::unexpected(JsonError::InvalidFormat);
+}
+
 std::expected<bool, Marco::JsonError> Marco::JsonValue::AsBool() const
 {
 	if (auto* p = std::get_if<bool>(&this->m_value))

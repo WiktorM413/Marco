@@ -10,7 +10,10 @@ Marco::JsonReader::JsonReader(): m_error(JsonError::NoError), m_valid(false) { }
 
 Marco::JsonReader::JsonReader(const std::string& jsonString)
 {
-	if (jsonString.empty() || jsonString.front() != '{' || jsonString.back() != '}')
+	size_t start = jsonString.find_first_not_of(" \t\r\n");
+	size_t end   = jsonString.find_last_not_of(" \t\r\n");
+	
+	if (start == std::string::npos || jsonString[start] != '{' || jsonString[end] != '}')
 	{
 		this->m_error = JsonError::InvalidFormat;
 		this->m_valid = false;
@@ -18,7 +21,7 @@ Marco::JsonReader::JsonReader(const std::string& jsonString)
 		return;
 	}
 
-	size_t index = 1;
+	size_t index = start + 1;
 
 	this->m_error = FormJsonFromString(this->m_json, jsonString, index);
 
@@ -55,10 +58,11 @@ std::expected<std::reference_wrapper<const Marco::JsonValue>, Marco::JsonError> 
 
 Marco::JsonError Marco::JsonReader::FormJsonFromString(Marco::JsonValue& jsonValue, const std::string& jsonString, size_t& index)
 {
-	std::string key{};
 	JsonError error = JsonError::InvalidFormat;
 	while (index < jsonString.length())
 	{
+		std::string key{};
+		
 		for (; index < jsonString.length(); index++)
 		{
 			if (std::isspace(jsonString[index]))
@@ -275,7 +279,6 @@ Marco::JsonError Marco::JsonReader::HandleNull(Marco::JsonValue& jsonValue, cons
 Marco::JsonError Marco::JsonReader::HandleArray(Marco::JsonValue& jsonValue, const std::string& jsonString, size_t& index)
 {
 	Marco::JsonError error = Marco::JsonError::NoError;
-	size_t arrayIndex = 0;
 
 	for (; index < jsonString.length(); index++)
 	{
@@ -301,8 +304,6 @@ Marco::JsonError Marco::JsonReader::HandleArray(Marco::JsonValue& jsonValue, con
 		{
 			return error;
 		}
-
-		arrayIndex++;
 
 		bool endOfArray = false;
 
