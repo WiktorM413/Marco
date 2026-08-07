@@ -1,4 +1,5 @@
 #include "marco/JsonReader.h"
+#include "marco/FileUtils.h"
 #include "marco/JsonError.h"
 #include "marco/JsonValue.h"
 #include <cctype>
@@ -31,10 +32,7 @@ Marco::JsonReader::JsonReader(const std::string& jsonString)
 	}
 }
 
-Marco::JsonReader::JsonReader(const std::fstream& jsonFile)
-{
-
-}
+Marco::JsonReader::JsonReader(const std::istream& jsonFile): JsonReader(ReadFile(jsonFile)) { }
 
 Marco::JsonValue& Marco::JsonReader::operator[](const std::string& key)
 {
