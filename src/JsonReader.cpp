@@ -83,12 +83,25 @@ Marco::JsonError Marco::JsonReader::FormJsonFromString(Marco::JsonValue& jsonVal
 	
 		error = FormJsonValue(jsonValue[key], jsonString, index);
 
+		bool EndOfObject = false;
+		
 		for (; index < jsonString.length(); index++)
 		{
+			if (jsonString[index] == '}')
+			{
+				EndOfObject = true;
+				break;
+			}
+			
 			if (jsonString[index] == ',')
 			{
 				break;
 			}
+		}
+
+		if (EndOfObject)
+		{
+			break;
 		}
 	}
 	
