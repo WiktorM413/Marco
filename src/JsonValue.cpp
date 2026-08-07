@@ -53,7 +53,7 @@ std::expected<std::nullptr_t, Marco::JsonError> Marco::JsonValue::AsNull() const
 		return *p;
 	}
 
-	return std::unexpected(JsonError{JsonErrorType::InvalidFormat, 0});
+	return std::unexpected(JsonError{JsonErrorType::WrongType, 0});
 }
 
 std::expected<bool, Marco::JsonError> Marco::JsonValue::AsBool() const
@@ -63,7 +63,7 @@ std::expected<bool, Marco::JsonError> Marco::JsonValue::AsBool() const
 		return *p;
 	}
 
-	return std::unexpected(JsonError{JsonErrorType::InvalidFormat, 0});
+	return std::unexpected(JsonError{JsonErrorType::WrongType, 0});
 }
 
 std::expected<double, Marco::JsonError> Marco::JsonValue::AsNumber() const
@@ -73,7 +73,7 @@ std::expected<double, Marco::JsonError> Marco::JsonValue::AsNumber() const
 		return *p;
 	}
 
-	return std::unexpected(JsonError{JsonErrorType::InvalidFormat, 0});
+	return std::unexpected(JsonError{JsonErrorType::WrongType, 0});
 }
 
 std::expected<std::string, Marco::JsonError> Marco::JsonValue::AsString() const
@@ -83,7 +83,7 @@ std::expected<std::string, Marco::JsonError> Marco::JsonValue::AsString() const
 		return *p;
 	}
 
-	return std::unexpected(JsonError{JsonErrorType::InvalidFormat, 0});
+	return std::unexpected(JsonError{JsonErrorType::WrongType, 0});
 }
 
 std::expected<std::reference_wrapper<const Marco::JsonObject>,  Marco::JsonError> Marco::JsonValue::AsObject() const
@@ -93,7 +93,7 @@ std::expected<std::reference_wrapper<const Marco::JsonObject>,  Marco::JsonError
 		return std::cref(*p);
 	}
 
-	return std::unexpected(JsonError{JsonErrorType::InvalidFormat, 0});
+	return std::unexpected(JsonError{JsonErrorType::WrongType, 0});
 }
 
 std::expected<std::reference_wrapper<const Marco::JsonArray>, Marco::JsonError> Marco::JsonValue::AsArray() const
@@ -103,7 +103,7 @@ std::expected<std::reference_wrapper<const Marco::JsonArray>, Marco::JsonError> 
 		return std::cref(*p);
 	}
 
-	return std::unexpected(JsonError{JsonErrorType::InvalidFormat, 0});
+	return std::unexpected(JsonError{JsonErrorType::WrongType, 0});
 }
 
 Marco::JsonValue& Marco::JsonValue::PushBack(JsonValue value)
