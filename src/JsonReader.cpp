@@ -141,6 +141,8 @@ Marco::JsonError Marco::JsonReader::FormJsonValue(Marco::JsonValue& jsonValue, c
 	}
 	else if (jsonString[index] == '[') // Possibly array
 	{
+		index++;
+		
 		error = HandleArray(jsonValue, jsonString, index);
 	}
 	else if (jsonString[index] == '{') // Possibly object
@@ -163,7 +165,7 @@ static Marco::JsonError HandleNumber(Marco::JsonValue& jsonValue, const std::str
 	
 	for (; index < jsonString.length(); index++)
 	{
-		if (std::isspace(jsonString[index]) || jsonString[index] == ',' || jsonString[index] == '}')
+		if (std::isspace(jsonString[index]) || jsonString[index] == ',' || jsonString[index] == '}' || jsonString[index] == ']')
 		{
 			jsonValue = std::stod(value);
 			
@@ -206,7 +208,7 @@ static Marco::JsonError HandleBool(Marco::JsonValue& jsonValue, const std::strin
 	
 	for (; index < jsonString.length(); index++)
 	{
-		if (std::isspace(jsonString[index]) || jsonString[index] == ',' || jsonString[index] == '}')
+		if (std::isspace(jsonString[index]) || jsonString[index] == ',' || jsonString[index] == '}' || jsonString[index] == ']')
 		{
 			if (value == "true")
 			{
@@ -238,7 +240,7 @@ static Marco::JsonError HandleNull(Marco::JsonValue& jsonValue, const std::strin
 	
 	for (; index < jsonString.length(); index++)
 	{
-		if (std::isspace(jsonString[index]) || jsonString[index] == ',' || jsonString[index] == '}')
+		if (std::isspace(jsonString[index]) || jsonString[index] == ',' || jsonString[index] == '}' || jsonString[index] == ']')
 		{
 			if (value == "null")
 			{
