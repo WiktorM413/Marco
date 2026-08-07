@@ -12,7 +12,7 @@ namespace Marco
 	public:
 		JsonReader();
 		JsonReader(const std::string&  jsonString);
-		JsonReader(const std::istream& jsonFile);
+		JsonReader(std::istream& jsonFile);
 
 		JsonValue&                                                        operator[](const std::string& key);
 		std::expected<std::reference_wrapper<const JsonValue>, JsonError> operator[](const std::string& key) const;

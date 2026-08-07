@@ -3,25 +3,40 @@
 #include <fstream>
 #include <filesystem>
 #include <sstream>
-
+#include <stdexcept>
 
 
 std::string ReadFile(const std::string& filepath)
 {
 	std::ifstream file(filepath, std::ios::binary);
-	
-	auto size = std::filesystem::file_size(filepath);
-	std::string content(size, '\0');
 
-	file.read(content.data(), size);
+	if (!file.is_open())
+	{
+		throw std::runtime_error("ReadFile: failed to open file: " + filepath);
+	}
+
+	std::error_code ec;
+	auto size = std::filesystem::file_size(filepath, ec);
+
+	if (ec)
+	{
+		throw std::runtime_error("ReadFile: failed to get size of file: " + filepath + " (" + ec.message() + ")");
+	}
+
+	std::string content(size, '\0');
+	file.read(content.data(), static_cast<std::streamsize>(size));
+
+	if (!file && !file.eof())
+	{
+		throw std::runtime_error("ReadFile: failed while reading file: " + filepath);
+	}
 
 	return content;
 }
 
-std::string ReadFile(const std::istream& file)
+std::string ReadFile(std::istream& file)
 {
 	std::ostringstream ss;
 	ss << file.rdbuf();
-
 	return ss.str();
 }

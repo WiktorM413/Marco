@@ -33,7 +33,7 @@ Marco::JsonReader::JsonReader(const std::string& jsonString)
 	}
 }
 
-Marco::JsonReader::JsonReader(const std::istream& jsonFile): JsonReader(ReadFile(jsonFile)) { }
+Marco::JsonReader::JsonReader(std::istream& jsonFile): JsonReader(ReadFile(jsonFile)) { }
 
 Marco::JsonValue& Marco::JsonReader::operator[](const std::string& key)
 {
