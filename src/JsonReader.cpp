@@ -68,17 +68,24 @@ Marco::JsonError Marco::JsonReader::FormJsonFromString(Marco::JsonValue& jsonVal
 			{
 				continue;
 			}
-	
-			if (jsonString[index] == '"')
-			{
-				index++;
-				break;
-			}
 		}
+
+		if (jsonString[index] == '}')
+		{
+			index++;
+			return JsonError{JsonErrorType::NoError, index};
+		}
+
+		if (jsonString[index] == '\"')
+		{
+			return JsonError{JsonErrorType::InvalidFormat, index};
+		}
+		
+		index++;
 	
 		for (; index < jsonString.length(); index++)
 		{
-			if (jsonString[index] == '"')
+			if (jsonString[index] == '\"')
 			{
 				index++;
 				break;
@@ -140,7 +147,7 @@ Marco::JsonError Marco::JsonReader::FormJsonValue(Marco::JsonValue& jsonValue, c
 	{
 		error = HandleNumber(jsonValue, jsonString, index);
 	}
-	else if (jsonString[index] == '"') // Possibly string
+	else if (jsonString[index] == '\"') // Possibly string
 	{
 		index++;
 
@@ -216,7 +223,7 @@ Marco::JsonError Marco::JsonReader::HandleString(Marco::JsonValue& jsonValue, co
 			return Marco::JsonError{JsonErrorType::InvalidFormat, index};
 		}
 		
-		if (jsonString[index] == '"')
+		if (jsonString[index] == '\"')
 		{
 			jsonValue = value;
 
