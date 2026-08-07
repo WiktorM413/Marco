@@ -3,6 +3,7 @@
 #include "marco/JsonError.h"
 #include "marco/JsonValue.h"
 #include <cctype>
+#include <stdexcept>
 
 
 Marco::JsonReader::JsonReader(): m_error(JsonError::NoError), m_valid(false) { }
@@ -135,7 +136,7 @@ Marco::JsonError Marco::JsonReader::FormJsonValue(Marco::JsonValue& jsonValue, c
 
 	JsonError error = JsonError::InvalidFormat;
 	
-	if (jsonString[index] >= '0' && jsonString[index] <= '9') // Possibly number
+	if ((jsonString[index] >= '0' && jsonString[index] <= '9') || jsonString[index] == '-') // Possibly number
 	{
 		error = HandleNumber(jsonValue, jsonString, index);
 	}
@@ -181,7 +182,18 @@ Marco::JsonError Marco::JsonReader::HandleNumber(Marco::JsonValue& jsonValue, co
 	{
 		if (std::isspace(jsonString[index]) || jsonString[index] == ',' || jsonString[index] == '}' || jsonString[index] == ']')
 		{
-			jsonValue = std::stod(value);
+			try
+			{	
+				jsonValue = std::stod(value);
+			}
+			catch (const std::invalid_argument&)
+			{
+				return Marco::JsonError::NumberParseError;
+			}
+			catch (const std::out_of_range&)
+			{
+				return Marco::JsonError::NumberOutOfRange;
+			}
 			
 			return Marco::JsonError::NoError;
 		}
