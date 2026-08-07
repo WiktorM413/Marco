@@ -6,8 +6,8 @@ int main()
 {
 	std::string jsonString = R"(
 		{
-			"name": "Anna",
 			"age": 28,
+			"name": "Anna",
 			"isStudent": false,
 			"skills": ["Python", "HTML", "JSON"],
 			"address": {
@@ -20,11 +20,11 @@ int main()
 
 	Marco::JsonReader jr(jsonString);
 
-	auto s = jr["name"].AsString();
+	auto s = jr["skills"][0].AsString();
 
 	if (s)
 	{
-		std::cout << jr["name"].AsString().value() << std::endl;
+		std::cout << s.value() << std::endl;
 	}
 	else
 	{
