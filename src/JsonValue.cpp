@@ -98,7 +98,7 @@ std::expected<std::reference_wrapper<const Marco::JsonArray>, Marco::JsonError> 
 
 Marco::JsonValue& Marco::JsonValue::PushBack(JsonValue& value)
 {
-	if (!std::holds_alternative<JsonArray>(this->m_value))
+	if (! std::holds_alternative<JsonArray>(this->m_value))
 	{
 		this->m_value = JsonArray{};
 	}
@@ -108,7 +108,7 @@ Marco::JsonValue& Marco::JsonValue::PushBack(JsonValue& value)
 
 Marco::JsonValue& Marco::JsonValue::operator[](const std::string& key)
 {
-	if (!std::holds_alternative<JsonObject>(this->m_value))
+	if (! std::holds_alternative<JsonObject>(this->m_value))
 	{
 		this->m_value = JsonObject{};
 	}
@@ -132,7 +132,7 @@ std::expected<std::reference_wrapper<const Marco::JsonValue>, Marco::JsonError> 
 
 Marco::JsonValue& Marco::JsonValue::operator[](size_t index)
 {
-	if (!std::holds_alternative<JsonArray>(this->m_value))
+	if (! std::holds_alternative<JsonArray>(this->m_value))
 	{
 		this->m_value = JsonArray{};
 	}
