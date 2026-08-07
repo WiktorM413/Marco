@@ -28,7 +28,7 @@ int main()
 	}
 	else
 	{
-		std::cout << "Encountered error: " << (int)s.error() << std::endl;
+		std::cout << "Encountered error: " << (int)s.error().errorType << std::endl;
 	}
 	
 	return 0;

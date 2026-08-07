@@ -6,7 +6,7 @@
 #include <stdexcept>
 
 
-Marco::JsonReader::JsonReader(): m_error(JsonError::NoError), m_valid(false) { }
+Marco::JsonReader::JsonReader(): m_error(JsonErrorType::NoError), m_valid(false) { }
 
 // TODO: Finish implementing
 
@@ -17,7 +17,7 @@ Marco::JsonReader::JsonReader(const std::string& jsonString)
 	
 	if (start == std::string::npos || jsonString[start] != '{' || jsonString[end] != '}')
 	{
-		this->m_error = JsonError::InvalidFormat;
+		this->m_error = JsonError{JsonErrorType::InvalidFormat, 0};
 		this->m_valid = false;
 
 		return;
@@ -27,7 +27,7 @@ Marco::JsonReader::JsonReader(const std::string& jsonString)
 
 	this->m_error = FormJsonFromString(this->m_json, jsonString, index);
 
-	if (this->m_error == JsonError::NoError)
+	if (this->m_error.errorType == JsonErrorType::NoError)
 	{
 		this->m_valid = true;
 	}
@@ -57,7 +57,7 @@ std::expected<std::reference_wrapper<const Marco::JsonValue>, Marco::JsonError> 
 
 Marco::JsonError Marco::JsonReader::FormJsonFromString(Marco::JsonValue& jsonValue, const std::string& jsonString, size_t& index)
 {
-	JsonError error = JsonError::InvalidFormat;
+	JsonError error = JsonError{JsonErrorType::InvalidFormat, index};
 	while (index < jsonString.length())
 	{
 		std::string key{};
@@ -134,7 +134,7 @@ Marco::JsonError Marco::JsonReader::FormJsonValue(Marco::JsonValue& jsonValue, c
 		}
 	}
 
-	JsonError error = JsonError::InvalidFormat;
+	JsonError error = JsonError{JsonErrorType::InvalidFormat, index};
 	
 	if ((jsonString[index] >= '0' && jsonString[index] <= '9') || jsonString[index] == '-') // Possibly number
 	{
@@ -168,7 +168,7 @@ Marco::JsonError Marco::JsonReader::FormJsonValue(Marco::JsonValue& jsonValue, c
 	}
 	else
 	{
-		error = JsonError::InvalidFormat;
+		error = JsonError{JsonErrorType::InvalidFormat, 1};
 	}
 
 	return error;
@@ -188,20 +188,20 @@ Marco::JsonError Marco::JsonReader::HandleNumber(Marco::JsonValue& jsonValue, co
 			}
 			catch (const std::invalid_argument&)
 			{
-				return Marco::JsonError::NumberParseError;
+				return Marco::JsonError{JsonErrorType::NumberParseError, index};
 			}
 			catch (const std::out_of_range&)
 			{
-				return Marco::JsonError::NumberOutOfRange;
+				return Marco::JsonError{JsonErrorType::NumberOutOfRange, index};
 			}
 			
-			return Marco::JsonError::NoError;
+			return Marco::JsonError{JsonErrorType::NoError, index};
 		}
 		
 		value.push_back(jsonString[index]);
 	}
 
-	return Marco::JsonError::InvalidFormat;
+	return Marco::JsonError{JsonErrorType::InvalidFormat, index};
 }
 
 Marco::JsonError Marco::JsonReader::HandleString(Marco::JsonValue& jsonValue, const std::string& jsonString, size_t& index)
@@ -213,13 +213,13 @@ Marco::JsonError Marco::JsonReader::HandleString(Marco::JsonValue& jsonValue, co
 		{
 			jsonValue = value;
 			
-			return Marco::JsonError::NoError;
+			return Marco::JsonError{JsonErrorType::NoError, index};
 		}
 
 		value.push_back(jsonString[index]);
 	}
 
-	return Marco::JsonError::InvalidFormat;
+	return Marco::JsonError{JsonErrorType::InvalidFormat, index};
 }
 
 Marco::JsonError Marco::JsonReader::HandleBool(Marco::JsonValue& jsonValue, const std::string& jsonString, size_t& index)
@@ -234,24 +234,24 @@ Marco::JsonError Marco::JsonReader::HandleBool(Marco::JsonValue& jsonValue, cons
 			{
 				jsonValue = true;
 				
-				return Marco::JsonError::NoError;
+				return Marco::JsonError{JsonErrorType::NoError, index};
 			}
 			else if (value == "false")
 			{
 				jsonValue = false;
 
-				return Marco::JsonError::NoError;
+				return Marco::JsonError{JsonErrorType::NoError, index};
 			}
 			else
 			{
-				return Marco::JsonError::InvalidFormat;
+				return Marco::JsonError{JsonErrorType::InvalidFormat, index};
 			}
 		}
 
 		value.push_back(jsonString[index]);
 	}
 
-	return Marco::JsonError::InvalidFormat;
+	return Marco::JsonError{JsonErrorType::InvalidFormat, index};
 }
 
 Marco::JsonError Marco::JsonReader::HandleNull(Marco::JsonValue& jsonValue, const std::string& jsonString, size_t& index)
@@ -266,23 +266,23 @@ Marco::JsonError Marco::JsonReader::HandleNull(Marco::JsonValue& jsonValue, cons
 			{
 				jsonValue = nullptr;
 
-				return Marco::JsonError::NoError;
+				return Marco::JsonError{JsonErrorType::NoError, index};
 			}
 			else
 			{
-				return Marco::JsonError::InvalidFormat;
+				return Marco::JsonError{JsonErrorType::InvalidFormat, index};
 			}
 		}
 
 		value.push_back(jsonString[index]);
 	}
 
-	return Marco::JsonError::InvalidFormat;
+	return Marco::JsonError{JsonErrorType::InvalidFormat, index};
 }
 
 Marco::JsonError Marco::JsonReader::HandleArray(Marco::JsonValue& jsonValue, const std::string& jsonString, size_t& index)
 {
-	Marco::JsonError error = Marco::JsonError::NoError;
+	Marco::JsonError error = Marco::JsonError{JsonErrorType::NoError, index};
 
 	for (; index < jsonString.length(); index++)
 	{
@@ -296,7 +296,7 @@ Marco::JsonError Marco::JsonReader::HandleArray(Marco::JsonValue& jsonValue, con
 	{
 		index++;
 
-		return Marco::JsonError::NoError;
+		return Marco::JsonError{JsonErrorType::NoError, index};
 	}
 
 	while (index < jsonString.length())
@@ -304,7 +304,7 @@ Marco::JsonError Marco::JsonReader::HandleArray(Marco::JsonValue& jsonValue, con
 		JsonValue value {};
 		error = FormJsonValue(jsonValue.PushBack(value), jsonString, index);
 
-		if (error != JsonError::NoError)
+		if (error.errorType != JsonErrorType::NoError)
 		{
 			return error;
 		}
