@@ -1,7 +1,17 @@
 #include "marco/JsonReader.h"
 #include "marco/JsonError.h"
+#include "marco/JsonValue.h"
+#include <cctype>
 
-Marco::JsonReader::JsonReader(): m_valid(false) { }
+
+static Marco::JsonError HandleNumber(Marco::JsonValue& jsonValue, const std::string& jsonString, size_t& index);
+static Marco::JsonError HandleString(Marco::JsonValue& jsonValue, const std::string& jsonString, size_t& index);
+static Marco::JsonError HandleBool  (Marco::JsonValue& jsonValue, const std::string& jsonString, size_t& index);
+static Marco::JsonError HandleNull  (Marco::JsonValue& jsonValue, const std::string& jsonString, size_t& index);
+static Marco::JsonError HandleArray (Marco::JsonValue& jsonValue, const std::string& jsonString, size_t& index);
+
+
+Marco::JsonReader::JsonReader(): m_error(JsonError::NoError), m_valid(false) { }
 
 // TODO: Finish implementing
 
@@ -9,17 +19,151 @@ Marco::JsonReader::JsonReader(const std::string& jsonString)
 {
 	if (jsonString.empty() || jsonString.front() != '{' || jsonString.back() != '}')
 	{
-		this->m_valid = false;
 		this->m_error = JsonError::InvalidFormat;
+		this->m_valid = false;
+
 		return;
 	}
-	
-	m_valid = true;
 
-	m_json = jsonString;
+	size_t index = 1;
+
+	this->m_error = FormJsonFromString(this->m_json, jsonString, index);
+
+	if (this->m_error == JsonError::NoError)
+	{
+		this->m_valid = true;
+	}
 }
 
 Marco::JsonReader::JsonReader(const std::fstream& jsonFile)
+{
+
+}
+
+Marco::JsonError Marco::JsonReader::FormJsonFromString(Marco::JsonValue& jsonValue, const std::string& jsonString, size_t& index)
+{
+	std::string key {};
+	JsonError error = JsonError::InvalidFormat;
+	while (index < jsonString.length())
+	{
+		for (; index < jsonString.length(); index++)
+		{
+			if (std::isspace(jsonString[index]))
+			{
+				continue;
+			}
+	
+			if (jsonString[index] == '"')
+			{
+				index++;
+				break;
+			}
+		}
+	
+		for (; index < jsonString.length(); index++)
+		{
+			if (jsonString[index] == '"')
+			{
+				index++;
+				break;
+			}
+	
+			key.push_back(jsonString[index]);
+		}
+	
+		for (; index < jsonString.length(); index++)
+		{
+			if (jsonString[index] == ':')
+			{
+				index++;
+				break;
+			}
+		}
+	
+		error = FormJsonValue(jsonValue[key], jsonString, index);
+
+		for (; index < jsonString.length(); index++)
+		{
+			if (jsonString[index] == ',')
+			{
+				break;
+			}
+		}
+	}
+	
+	
+	return error;
+}
+
+Marco::JsonError Marco::JsonReader::FormJsonValue(Marco::JsonValue& jsonValue, const std::string& jsonString, size_t& index)
+{
+	for (; index < jsonString.length(); index++)
+	{
+		if (!std::isspace(jsonString[index]))
+		{
+			break;
+		}
+	}
+
+	JsonError error = JsonError::InvalidFormat;
+	
+	if (jsonString[index] >= '0' && jsonString[index] <= '9') // Possibly number
+	{
+		error = HandleNumber(jsonValue, jsonString, index);
+	}
+	else if (jsonString[index] == '"') // Possibly string
+	{
+		index++;
+
+		error = HandleString(jsonValue, jsonString, index);
+	}
+	else if (jsonString[index] == 't' || jsonString[index] == 'f') // Possibly boolean
+	{
+		error = HandleBool(jsonValue, jsonString, index);
+	}
+	else if (jsonString[index] == 'n') // Possibly null
+	{
+		error = HandleNull(jsonValue, jsonString, index);
+	}
+	else if (jsonString[index] == '[') // Possibly array
+	{
+		error = HandleArray(jsonValue, jsonString, index);
+	}
+	else if (jsonString[index] == '{') // Possibly object
+	{
+		index++;
+		
+		error = FormJsonFromString(jsonValue, jsonString, index);
+	}
+	else
+	{
+		return JsonError::InvalidFormat;
+	}
+
+	return {};
+}
+
+static Marco::JsonError HandleNumber(Marco::JsonValue& jsonValue, const std::string& jsonString, size_t& index)
+{
+	
+}
+
+static Marco::JsonError HandleString(Marco::JsonValue& jsonValue, const std::string& jsonString, size_t& index)
+{
+	
+}
+
+static Marco::JsonError HandleBool(Marco::JsonValue& jsonValue, const std::string& jsonString, size_t& index)
+{
+	
+}
+
+static Marco::JsonError HandleNull(Marco::JsonValue& jsonValue, const std::string& jsonString, size_t& index)
+{
+	
+}
+
+static Marco::JsonError HandleArray(Marco::JsonValue& jsonValue, const std::string& jsonString, size_t& index)
 {
 	
 }

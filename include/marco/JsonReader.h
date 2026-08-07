@@ -1,9 +1,9 @@
 #pragma once
 
-#include <optional>
 #include <string>
 #include <fstream>
 #include "marco/JsonError.h"
+#include "marco/JsonValue.h"
 
 namespace Marco
 {
@@ -15,8 +15,11 @@ namespace Marco
 		JsonReader(const std::fstream& jsonFile);
 
 	private:
-		std::string m_json;
-		std::optional<JsonError> m_error;
-		bool        m_valid;
+		static JsonError FormJsonFromString(JsonValue& jsonValue, const std::string& jsonString, size_t& index);
+		static JsonError FormJsonValue(     JsonValue& jsonValue, const std::string& jsonString, size_t& index);
+		
+		JsonValue m_json;
+		JsonError m_error;
+		bool      m_valid;
 	};
 }

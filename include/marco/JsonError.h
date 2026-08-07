@@ -4,6 +4,7 @@ namespace Marco
 {
 	enum class JsonError
 	{
-		InvalidFormat
+		InvalidFormat,
+		NoError
 	};
 }
