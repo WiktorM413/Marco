@@ -194,11 +194,11 @@ Marco::JsonError Marco::JsonReader::HandleNumber(Marco::JsonValue& jsonValue, co
 			{
 				return Marco::JsonError{JsonErrorType::NumberOutOfRange, index};
 			}
+
+			index++;
 			
 			return Marco::JsonError{JsonErrorType::NoError, index};
 		}
-		
-		index++;
 		
 		value.push_back(jsonString[index]);
 	}
