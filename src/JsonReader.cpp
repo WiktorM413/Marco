@@ -209,11 +209,6 @@ Marco::JsonError Marco::JsonReader::HandleString(Marco::JsonValue& jsonValue, co
 	std::string value{};
 	for (; index < jsonString.length(); index++)
 	{
-		if (jsonString[index] == '}')
-		{
-			return Marco::JsonError::InvalidFormat;
-		}
-		
 		if (jsonString[index] == '"')
 		{
 			jsonValue = value;

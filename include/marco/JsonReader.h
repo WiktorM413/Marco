@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <expected>
 #include "marco/JsonError.h"
 #include "marco/JsonValue.h"
 

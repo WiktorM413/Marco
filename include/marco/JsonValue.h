@@ -45,7 +45,7 @@ namespace Marco
 		std::expected<std::reference_wrapper<const JsonObject>,  JsonError> AsObject() const;
 		std::expected<std::reference_wrapper<const JsonArray>,   JsonError> AsArray()  const;
 
-		JsonValue& PushBack(JsonValue& value);
+		JsonValue& PushBack(JsonValue value);
 		
 		JsonValue&                                                        operator[](const std::string& key);
 		std::expected<std::reference_wrapper<const JsonValue>, JsonError> operator[](const std::string& key) const;

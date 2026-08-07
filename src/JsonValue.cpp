@@ -106,14 +106,14 @@ std::expected<std::reference_wrapper<const Marco::JsonArray>, Marco::JsonError> 
 	return std::unexpected(JsonError::WrongType);
 }
 
-Marco::JsonValue& Marco::JsonValue::PushBack(JsonValue& value)
+Marco::JsonValue& Marco::JsonValue::PushBack(JsonValue value)
 {
 	if (! std::holds_alternative<JsonArray>(this->m_value))
 	{
 		this->m_value = JsonArray{};
 	}
 	
-	return std::get<JsonArray>(this->m_value).emplace_back(value);
+	return std::get<JsonArray>(this->m_value).emplace_back(std::move(value));
 }
 
 Marco::JsonValue& Marco::JsonValue::operator[](const std::string& key)
