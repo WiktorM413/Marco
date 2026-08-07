@@ -1,6 +1,7 @@
 #include "marco/JsonReader.h"
 #include "marco/JsonError.h"
 #include "marco/JsonValue.h"
+#include "marco/StringUtils.h"
 #include <cctype>
 
 
@@ -149,7 +150,7 @@ static Marco::JsonError HandleNumber(Marco::JsonValue& jsonValue, const std::str
 	
 	for (; index < jsonString.length(); index++)
 	{
-		if (std::isspace(jsonString[index]) || jsonString[index] == ',')
+		if (std::isspace(jsonString[index]) || jsonString[index] == ',' || jsonString[index] == '}')
 		{
 			jsonValue = std::stod(value);
 			
@@ -167,6 +168,11 @@ static Marco::JsonError HandleString(Marco::JsonValue& jsonValue, const std::str
 	std::string value{};
 	for (; index < jsonString.length(); index++)
 	{
+		if (jsonString[index] == '}')
+		{
+			return Marco::JsonError::InvalidFormat;
+		}
+		
 		if (jsonString[index] == '"')
 		{
 			jsonValue = value;
@@ -187,7 +193,7 @@ static Marco::JsonError HandleBool(Marco::JsonValue& jsonValue, const std::strin
 	
 	for (; index < jsonString.length(); index++)
 	{
-		if (std::isspace(jsonString[index]) || jsonString[index] == ',')
+		if (std::isspace(jsonString[index]) || jsonString[index] == ',' || jsonString[index] == '}')
 		{
 			if (value == "true")
 			{
@@ -219,7 +225,7 @@ static Marco::JsonError HandleNull(Marco::JsonValue& jsonValue, const std::strin
 	
 	for (; index < jsonString.length(); index++)
 	{
-		if (std::isspace(jsonString[index]) || jsonString[index] == ',')
+		if (std::isspace(jsonString[index]) || jsonString[index] == ',' || jsonString[index] == '}')
 		{
 			if (value == "null")
 			{
