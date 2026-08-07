@@ -212,7 +212,6 @@ Marco::JsonError Marco::JsonReader::HandleString(Marco::JsonValue& jsonValue, co
 		if (jsonString[index] == '"')
 		{
 			jsonValue = value;
-			index++;
 			
 			return Marco::JsonError::NoError;
 		}
