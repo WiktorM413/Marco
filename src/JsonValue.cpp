@@ -46,6 +46,16 @@ bool Marco::JsonValue::IsArray() const
 	return std::holds_alternative<JsonArray>(this->m_value);
 }
 
+std::expected<std::nullptr_t, Marco::JsonError> Marco::JsonValue::AsNull() const
+{
+	if (auto* p = std::get_if<std::nullptr_t>(&this->m_value))
+	{
+		return *p;
+	}
+
+	return std::unexpected(JsonError{JsonErrorType::WrongType, 0});
+}
+
 std::expected<bool, Marco::JsonError> Marco::JsonValue::AsBool() const
 {
 	if (auto* p = std::get_if<bool>(&this->m_value))
@@ -53,7 +63,7 @@ std::expected<bool, Marco::JsonError> Marco::JsonValue::AsBool() const
 		return *p;
 	}
 
-	return std::unexpected(JsonError::InvalidFormat);
+	return std::unexpected(JsonError{JsonErrorType::WrongType, 0});
 }
 
 std::expected<double, Marco::JsonError> Marco::JsonValue::AsNumber() const
@@ -63,7 +73,7 @@ std::expected<double, Marco::JsonError> Marco::JsonValue::AsNumber() const
 		return *p;
 	}
 
-	return std::unexpected(JsonError::InvalidFormat);
+	return std::unexpected(JsonError{JsonErrorType::WrongType, 0});
 }
 
 std::expected<std::string, Marco::JsonError> Marco::JsonValue::AsString() const
@@ -73,7 +83,7 @@ std::expected<std::string, Marco::JsonError> Marco::JsonValue::AsString() const
 		return *p;
 	}
 
-	return std::unexpected(JsonError::InvalidFormat);
+	return std::unexpected(JsonError{JsonErrorType::WrongType, 0});
 }
 
 std::expected<std::reference_wrapper<const Marco::JsonObject>,  Marco::JsonError> Marco::JsonValue::AsObject() const
@@ -83,7 +93,7 @@ std::expected<std::reference_wrapper<const Marco::JsonObject>,  Marco::JsonError
 		return std::cref(*p);
 	}
 
-	return std::unexpected(JsonError::InvalidFormat);
+	return std::unexpected(JsonError{JsonErrorType::WrongType, 0});
 }
 
 std::expected<std::reference_wrapper<const Marco::JsonArray>, Marco::JsonError> Marco::JsonValue::AsArray() const
@@ -93,12 +103,22 @@ std::expected<std::reference_wrapper<const Marco::JsonArray>, Marco::JsonError> 
 		return std::cref(*p);
 	}
 
-	return std::unexpected(JsonError::InvalidFormat);
+	return std::unexpected(JsonError{JsonErrorType::WrongType, 0});
+}
+
+Marco::JsonValue& Marco::JsonValue::PushBack(JsonValue value)
+{
+	if (! std::holds_alternative<JsonArray>(this->m_value))
+	{
+		this->m_value = JsonArray{};
+	}
+	
+	return std::get<JsonArray>(this->m_value).emplace_back(std::move(value));
 }
 
 Marco::JsonValue& Marco::JsonValue::operator[](const std::string& key)
 {
-	if (!std::holds_alternative<JsonObject>(this->m_value))
+	if (! std::holds_alternative<JsonObject>(this->m_value))
 	{
 		this->m_value = JsonObject{};
 	}
@@ -117,12 +137,12 @@ std::expected<std::reference_wrapper<const Marco::JsonValue>, Marco::JsonError> 
 		}
 	}
 
-	return std::unexpected(JsonError::InvalidFormat);
+	return std::unexpected(JsonError{JsonErrorType::InvalidFormat, 0});
 }
 
 Marco::JsonValue& Marco::JsonValue::operator[](size_t index)
 {
-	if (!std::holds_alternative<JsonArray>(this->m_value))
+	if (! std::holds_alternative<JsonArray>(this->m_value))
 	{
 		this->m_value = JsonArray{};
 	}
@@ -140,5 +160,5 @@ std::expected<std::reference_wrapper<const Marco::JsonValue>, Marco::JsonError> 
 		}
 	}
 
-	return std::unexpected(JsonError::InvalidFormat);
+	return std::unexpected(JsonError{JsonErrorType::InvalidFormat, 0});
 }

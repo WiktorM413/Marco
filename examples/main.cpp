@@ -1,13 +1,35 @@
+#include "marco/JsonReader.h"
 #include <iostream>
 #include <marco/JsonValue.h>
 
 int main()
 {
-	Marco::JsonValue jv;
+	std::string jsonString = R"(
+		{
+			"age": 28,
+			"name": "Anna",
+			"isStudent": false,
+			"skills": ["Python", "HTML", "JSON"],
+			"address": {
+				"city": "Wrocław",
+				"zipCode": "51-317"
+			},
+			"phone": null
+		}
+	)";
 
-	jv["name"]["first"] = "Wiktor";
+	Marco::JsonReader jr(jsonString);
+
+	auto s = jr["skills"][0].AsString();
+
+	if (s)
+	{
+		std::cout << s.value() << std::endl;
+	}
+	else
+	{
+		std::cout << "Encountered error: " << (int)s.error().errorType << std::endl;
+	}
 	
-	std::cout << jv["name"]["first"].AsString().value();
-
 	return 0;
 }

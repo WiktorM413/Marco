@@ -37,12 +37,15 @@ namespace Marco
 		bool IsString() const;
 		bool IsObject() const;
 		bool IsArray()  const;
-		
+
+		std::expected<std::nullptr_t,                            JsonError> AsNull()   const;
 		std::expected<bool,                                      JsonError> AsBool()   const;
 		std::expected<double,                                    JsonError> AsNumber() const;
 		std::expected<std::string,                               JsonError> AsString() const;
 		std::expected<std::reference_wrapper<const JsonObject>,  JsonError> AsObject() const;
 		std::expected<std::reference_wrapper<const JsonArray>,   JsonError> AsArray()  const;
+
+		JsonValue& PushBack(JsonValue value);
 		
 		JsonValue&                                                        operator[](const std::string& key);
 		std::expected<std::reference_wrapper<const JsonValue>, JsonError> operator[](const std::string& key) const;
