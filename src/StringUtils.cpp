@@ -7,5 +7,13 @@ void TrimFront(std::string &s)
 
 void TrimBack(std::string& s)
 {
-	s.erase(s.find_last_not_of(" \t\n\v\f\r") + 1);
+	auto pos = s.find_last_not_of(" \t\n\v\f\r");
+
+	if (pos == std::string::npos)
+	{
+		s.clear();
+		return;
+	}
+	
+	s.erase(pos + 1);
 }
