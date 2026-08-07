@@ -114,7 +114,7 @@ Marco::JsonError Marco::JsonReader::FormJsonFromString(Marco::JsonValue& jsonVal
 			}
 		}
 
-		if (EndOfObject)
+		if (EndOfObject || error.errorType != JsonErrorType::NoError)
 		{
 			break;
 		}
@@ -211,6 +211,11 @@ Marco::JsonError Marco::JsonReader::HandleString(Marco::JsonValue& jsonValue, co
 	std::string value{};
 	for (; index < jsonString.length(); index++)
 	{
+		if (jsonString[index] == '\n' || jsonString[index] == '\t' || jsonString[index] == '\b' || jsonString[index] == '\f' || jsonString[index] == '\r')
+		{
+			return Marco::JsonError{JsonErrorType::InvalidFormat, index};
+		}
+		
 		if (jsonString[index] == '"')
 		{
 			jsonValue = value;
