@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <expected>
 #include "marco/JsonError.h"
 #include "marco/JsonValue.h"
 
@@ -13,11 +12,6 @@ namespace Marco
 		JsonReader();
 		JsonReader(const std::string&  jsonString);
 		JsonReader(std::istream& jsonFile);
-
-		JsonValue&                                                        operator[](const std::string& key);
-		std::expected<std::reference_wrapper<const JsonValue>, JsonError> operator[](const std::string& key) const;
-		JsonValue&                                                        operator[](size_t index);
-		std::expected<std::reference_wrapper<const JsonValue>, JsonError> operator[](size_t index) const;
 		
 	private:
 		static JsonError FormJsonFromString (JsonValue& jsonValue, const std::string& jsonString, size_t& index);

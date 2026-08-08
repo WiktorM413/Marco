@@ -33,26 +33,6 @@ Marco::JsonReader::JsonReader(const std::string& jsonString)
 
 Marco::JsonReader::JsonReader(std::istream& jsonFile): JsonReader(ReadFile(jsonFile)) { }
 
-Marco::JsonValue& Marco::JsonReader::operator[](const std::string& key)
-{
-	return this->m_json[key];
-}
-
-std::expected<std::reference_wrapper<const Marco::JsonValue>, Marco::JsonError> Marco::JsonReader::operator[](const std::string& key) const
-{
-	return this->m_json[key];
-}
-
-Marco::JsonValue& Marco::JsonReader::operator[](size_t index)
-{
-	return this->m_json[index];
-}
-
-std::expected<std::reference_wrapper<const Marco::JsonValue>, Marco::JsonError> Marco::JsonReader::operator[](size_t index) const
-{
-	return this->m_json[index];
-}
-
 Marco::JsonError Marco::JsonReader::FormJsonFromString(Marco::JsonValue& jsonValue, const std::string& jsonString, size_t& index)
 {
 	JsonError error = JsonError{JsonErrorType::InvalidFormat, index};
