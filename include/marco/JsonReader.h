@@ -10,8 +10,9 @@ namespace Marco
 	{
 	public:
 		JsonReader();
-		JsonReader(const std::string&  jsonString);
-		JsonReader(std::istream& jsonFile);
+		
+		JsonValue Parse(const std::string&  jsonString);
+		JsonValue Parse(std::istream& jsonFile);
 		
 	private:
 		static JsonError FormJsonFromString (JsonValue& jsonValue, const std::string& jsonString, size_t& index);
@@ -22,7 +23,6 @@ namespace Marco
 		static Marco::JsonError HandleNull  (JsonValue& jsonValue, const std::string& jsonString, size_t& index);
 		static Marco::JsonError HandleArray (JsonValue& jsonValue, const std::string& jsonString, size_t& index);
 		
-		JsonValue m_json;
 		JsonError m_error;
 		bool      m_valid;
 	};
