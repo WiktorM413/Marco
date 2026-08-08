@@ -42,6 +42,16 @@ Marco::JsonValue Marco::JsonReader::Parse(std::istream& jsonFile)
 	return this->Parse(ReadFile(jsonFile));
 }
 
+Marco::JsonError Marco::JsonReader::Error()
+{
+	return this->m_error;
+}
+
+bool Marco::JsonReader::IsValid()
+{
+	return this->m_valid;
+}
+
 Marco::JsonError Marco::JsonReader::FormJsonFromString(Marco::JsonValue& jsonValue, const std::string& jsonString, size_t& index)
 {
 	JsonError error = JsonError{JsonErrorType::InvalidFormat, index};
