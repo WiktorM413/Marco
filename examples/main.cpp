@@ -18,18 +18,20 @@ int main()
 		}
 	)";
 
-	Marco::JsonReader jr(jsonString);
+	Marco::JsonReader jr;
 
-	auto s = jr["skills"][0].AsString();
+	auto json = jr.Parse(jsonString);
+
+	auto s = json["phone"].AsNull();
 
 	if (s)
 	{
-		std::cout << s.value() << std::endl;
+		std::cout << "value: " << s.value() << std::endl;
 	}
 	else
 	{
-		std::cout << "Encountered error: " << (int)s.error().errorType << std::endl;
+		std::cout << "Error number: " << (int)s.error().errorType << std::endl;
 	}
-	
+		
 	return 0;
 }

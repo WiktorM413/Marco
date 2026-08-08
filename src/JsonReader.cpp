@@ -51,9 +51,9 @@ Marco::JsonError Marco::JsonReader::FormJsonFromString(Marco::JsonValue& jsonVal
 		
 		for (; index < jsonString.length(); index++)
 		{
-			if (std::isspace(jsonString[index]))
+			if (! std::isspace(jsonString[index]))
 			{
-				continue;
+				break;
 			}
 		}
 
@@ -63,7 +63,7 @@ Marco::JsonError Marco::JsonReader::FormJsonFromString(Marco::JsonValue& jsonVal
 			return JsonError{JsonErrorType::NoError, index};
 		}
 
-		if (jsonString[index] == '\"')
+		if (jsonString[index] != '\"')
 		{
 			return JsonError{JsonErrorType::InvalidFormat, index};
 		}
@@ -92,26 +92,36 @@ Marco::JsonError Marco::JsonReader::FormJsonFromString(Marco::JsonValue& jsonVal
 	
 		error = FormJsonValue(jsonValue[key], jsonString, index);
 
-		bool EndOfObject = false;
-		
 		for (; index < jsonString.length(); index++)
 		{
-			if (jsonString[index] == '}')
-			{
-				EndOfObject = true;
-				break;
-			}
-			
-			if (jsonString[index] == ',')
+			if (! std::isspace(jsonString[index]))
 			{
 				break;
 			}
 		}
 
-		if (EndOfObject || error.errorType != JsonErrorType::NoError)
+		if (index >= jsonString.length())
 		{
+			error = JsonError{JsonErrorType::InvalidFormat, index};
 			break;
 		}
+
+		if (jsonString[index] == '}')
+		{
+			index++;
+
+			error = JsonError{JsonErrorType::NoError, index};
+			break;
+		}
+
+		if (jsonString[index] == ',')
+		{
+			index++;
+			continue;
+		}
+
+		error = JsonError{JsonErrorType::InvalidFormat, index};
+		break;
 	}
 	
 	
@@ -188,8 +198,6 @@ Marco::JsonError Marco::JsonReader::HandleNumber(Marco::JsonValue& jsonValue, co
 			{
 				return Marco::JsonError{JsonErrorType::NumberOutOfRange, index};
 			}
-
-			index++;
 			
 			return Marco::JsonError{JsonErrorType::NoError, index};
 		}
@@ -233,8 +241,6 @@ Marco::JsonError Marco::JsonReader::HandleBool(Marco::JsonValue& jsonValue, cons
 	{
 		if (std::isspace(jsonString[index]) || jsonString[index] == ',' || jsonString[index] == '}' || jsonString[index] == ']')
 		{
-			index++;
-			
 			if (value == "true")
 			{
 				jsonValue = true;
@@ -267,8 +273,6 @@ Marco::JsonError Marco::JsonReader::HandleNull(Marco::JsonValue& jsonValue, cons
 	{
 		if (std::isspace(jsonString[index]) || jsonString[index] == ',' || jsonString[index] == '}' || jsonString[index] == ']')
 		{
-			index++;
-
 			if (value == "null")
 			{
 				jsonValue = nullptr;
