@@ -15,6 +15,6 @@ namespace Marco
 	struct JsonError
 	{
 		JsonErrorType errorType;
-		std::size_t        index;
+		std::size_t   index;
 	};
 }
