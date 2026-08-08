@@ -8,8 +8,6 @@
 
 Marco::JsonReader::JsonReader(): m_error(JsonError{JsonErrorType::NoError, 0}), m_valid(false) { }
 
-// TODO: Finish implementing
-
 Marco::JsonReader::JsonReader(const std::string& jsonString)
 {
 	size_t start = jsonString.find_first_not_of(" \t\r\n");
