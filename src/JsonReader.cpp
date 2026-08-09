@@ -234,7 +234,12 @@ Marco::JsonError Marco::JsonReader::HandleString(Marco::JsonValue& jsonValue, co
 
 		if (jsonString[index] == '\\')
 		{
-			HandleEscape(value, jsonString, index);
+			JsonError error = HandleEscape(value, jsonString, index);
+
+			if (error.errorType != JsonErrorType::NoError)
+			{
+				return error;
+			}
 
 			continue;
 		}
