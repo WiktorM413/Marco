@@ -315,6 +315,22 @@ TEST(JsonValueSubscriptIndex, ConstAccessOnNonArrayFails)
 	EXPECT_EQ(result.error().errorType, Marco::JsonErrorType::InvalidFormat);
 }
 
+TEST(JsonValueSubscriptIndex, IndexingBeyondSizeFillsGapsWithNull)
+{
+	Marco::JsonArray initial{1};
+	Marco::JsonValue v(initial);
+	v[3] = 99;
+ 
+	auto arr = v.AsArray();
+	ASSERT_TRUE(arr.has_value());
+	ASSERT_EQ(arr.value().get().size(), 4);
+ 
+	EXPECT_TRUE(arr.value().get()[1].IsNull());
+	EXPECT_TRUE(arr.value().get()[2].IsNull());
+	EXPECT_TRUE(arr.value().get()[3].IsNumber());
+	EXPECT_DOUBLE_EQ(arr.value().get()[3].AsNumber().value(), 99.0);
+}
+
 TEST(JsonValueNested, MutableSubscriptChainingBuildNestedStructure)
 {
 	Marco::JsonValue value;
