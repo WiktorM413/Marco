@@ -321,6 +321,8 @@ Marco::JsonError Marco::JsonReader::HandleArray(Marco::JsonValue& jsonValue, con
 	{
 		index++;
 
+		jsonValue = JsonArray();
+
 		return Marco::JsonError{JsonErrorType::NoError, index};
 	}
 
