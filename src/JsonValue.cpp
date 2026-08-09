@@ -147,6 +147,12 @@ Marco::JsonValue& Marco::JsonValue::operator[](size_t index)
 		this->m_value = JsonArray{};
 	}
 
+	auto& arr = std::get<JsonArray>(this->m_value);
+	if (index >= arr.size())
+	{
+		arr.resize(index + 1);
+	}
+	
 	return std::get<JsonArray>(this->m_value)[index];
 }
 
