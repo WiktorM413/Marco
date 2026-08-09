@@ -23,7 +23,7 @@ target_compile_options(marco PRIVATE
 )
 
 option(MARCO_BUILD_EXAMPLES "Build marco example executables" ON)
-option(MARCO_BUILD_TESTS "Build marco tests" OFF)
+option(MARCO_BUILD_TESTS "Build marco tests" ON)
 
 if(MARCO_BUILD_EXAMPLES)
 	add_subdirectory(examples)
