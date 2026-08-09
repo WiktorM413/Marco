@@ -13,6 +13,9 @@ namespace Marco
 		
 		JsonValue Parse(const std::string&  jsonString);
 		JsonValue Parse(std::istream& jsonFile);
+
+		JsonError Error();
+		bool      IsValid();
 		
 	private:
 		static JsonError FormJsonFromString (JsonValue& jsonValue, const std::string& jsonString, size_t& index);
