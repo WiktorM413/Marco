@@ -18,13 +18,14 @@ namespace Marco
 		bool      IsValid();
 		
 	private:
-		static JsonError FormJsonFromString (JsonValue& jsonValue, const std::string& jsonString, size_t& index);
-		static JsonError FormJsonValue      (JsonValue& jsonValue, const std::string& jsonString, size_t& index);
-		static Marco::JsonError HandleNumber(JsonValue& jsonValue, const std::string& jsonString, size_t& index);
-		static Marco::JsonError HandleString(JsonValue& jsonValue, const std::string& jsonString, size_t& index);
-		static Marco::JsonError HandleBool  (JsonValue& jsonValue, const std::string& jsonString, size_t& index);
-		static Marco::JsonError HandleNull  (JsonValue& jsonValue, const std::string& jsonString, size_t& index);
-		static Marco::JsonError HandleArray (JsonValue& jsonValue, const std::string& jsonString, size_t& index);
+		static JsonError FormJsonFromString(JsonValue& jsonValue, const std::string& jsonString, size_t& index);
+		static JsonError FormJsonValue     (JsonValue& jsonValue, const std::string& jsonString, size_t& index);
+		static JsonError HandleNumber      (JsonValue& jsonValue, const std::string& jsonString, size_t& index);
+		static JsonError HandleString      (JsonValue& jsonValue, const std::string& jsonString, size_t& index);
+		static JsonError HandleBool        (JsonValue& jsonValue, const std::string& jsonString, size_t& index);
+		static JsonError HandleNull        (JsonValue& jsonValue, const std::string& jsonString, size_t& index);
+		static JsonError HandleArray       (JsonValue& jsonValue, const std::string& jsonString, size_t& index);
+		static JsonError HandleEscape      (std::string& value,   const std::string& jsonString, size_t& index);
 		
 		JsonError m_error;
 		bool      m_valid;
