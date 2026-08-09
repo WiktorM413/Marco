@@ -231,6 +231,18 @@ Marco::JsonError Marco::JsonReader::HandleString(Marco::JsonValue& jsonValue, co
 		{
 			return Marco::JsonError{JsonErrorType::InvalidFormat, index};
 		}
+
+		if (jsonString[index] == '\\')
+		{
+			JsonError error = HandleEscape(value, jsonString, index);
+
+			if (error.errorType != JsonErrorType::NoError)
+			{
+				return error;
+			}
+
+			continue;
+		}
 		
 		if (jsonString[index] == '\"')
 		{
@@ -361,4 +373,30 @@ Marco::JsonError Marco::JsonReader::HandleArray(Marco::JsonValue& jsonValue, con
 	}
 
 	return error;
+}
+
+Marco::JsonError Marco::JsonReader::HandleEscape(std::string& value,   const std::string& jsonString, size_t& index)
+{
+	index++;
+
+	if (index >= jsonString.length())
+	{
+		return JsonError{JsonErrorType::InvalidFormat, index};
+	}
+
+	switch (jsonString[index])
+	{
+		case '\"': value.push_back('\"'); break;
+		case '\\': value.push_back('\\'); break;
+		case '/': value.push_back ('/');  break;
+		case 'b': value.push_back ('\b'); break;
+		case 'f': value.push_back ('\f'); break;
+		case 'n': value.push_back ('\n'); break;
+		case 'r': value.push_back ('\r'); break;
+		case 't': value.push_back ('\t'); break;
+		default:
+			return JsonError{JsonErrorType::InvalidFormat, index};
+	}
+
+	return JsonError{JsonErrorType::NoError, index};
 }
