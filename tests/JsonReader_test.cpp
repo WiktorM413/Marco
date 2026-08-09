@@ -524,3 +524,84 @@ TEST(JsonReaderTest, FailsGracefullyOnUnclosedDeeplyNestedStructure)
 
 	EXPECT_FALSE(reader.IsValid());
 }
+
+TEST(JsonReaderTest, ParsesStringWithEscapedQuote)
+{
+	Marco::JsonReader reader;
+	Marco::JsonValue  value = reader.Parse(R"({"key":"say \"hi\""})"); 
+
+	ASSERT_TRUE(reader.IsValid());
+	EXPECT_EQ(value["key"].AsString().value(), R"(say "hi")");
+}
+
+TEST(JsonReaderTest, ParsesStringWithEscapedBackslash)
+{
+	Marco::JsonReader reader;
+	Marco::JsonValue  value = reader.Parse(R"({"key":"C:\\path"})");
+
+	ASSERT_TRUE(reader.IsValid());
+	EXPECT_EQ(value["key"].AsString().value(), R"(C:\path)");
+}
+
+TEST(JsonReaderTest, ParsesStringWithEscapedForwardSlash)
+{
+	Marco::JsonReader reader;
+	Marco::JsonValue  value = reader.Parse(R"({"key":"a\/b"})");
+
+	ASSERT_TRUE(reader.IsValid());
+	EXPECT_EQ(value["key"].AsString().value(), "a/b");
+}
+
+TEST(JsonReaderTest, ParsesStringWithEscapedNewline)
+{
+	Marco::JsonReader reader;
+	Marco::JsonValue  value = reader.Parse(R"({"key":"line1\nline2"})");
+	
+	ASSERT_TRUE(reader.IsValid());
+	EXPECT_EQ(value["key"].AsString().value(), "line1\nline2");
+}
+
+TEST(JsonReaderTest, ParsesStringWithEscapedTab)
+{
+	Marco::JsonReader reader;
+	Marco::JsonValue  value = reader.Parse(R"({"key":"a\tb"})");
+	
+	ASSERT_TRUE(reader.IsValid());
+	EXPECT_EQ(value["key"].AsString().value(), "a\tb");
+}
+
+TEST(JsonReaderTest, ParsesStringWithEscapedCarriageReturn)
+{
+	Marco::JsonReader reader;
+	Marco::JsonValue  value = reader.Parse(R"({"key":"a\rb"})");
+	
+	ASSERT_TRUE(reader.IsValid());
+	EXPECT_EQ(value["key"].AsString().value(), "a\rb");
+}
+
+TEST(JsonReaderTest, ParsesStringWithEscapedBackspace)
+{
+	Marco::JsonReader reader;
+	Marco::JsonValue  value = reader.Parse(R"({"key":"a\bb"})");
+	
+	ASSERT_TRUE(reader.IsValid());
+	EXPECT_EQ(value["key"].AsString().value(), "a\bb");
+}
+
+TEST(JsonReaderTest, ParsesStringWithEscapedFormFeed)
+{
+	Marco::JsonReader reader;
+	Marco::JsonValue  value = reader.Parse(R"({"key":"a\fb"})");
+	
+	ASSERT_TRUE(reader.IsValid());
+	EXPECT_EQ(value["key"].AsString().value(), "a\fb");
+}
+
+TEST(JsonReaderTest, ParsesStringWithMultipleConsecutiveEscapes)
+{
+	Marco::JsonReader reader;
+	Marco::JsonValue  value = reader.Parse(R"({"key":"\n\t\\\""})");
+	
+	ASSERT_TRUE(reader.IsValid());
+	EXPECT_EQ(value["key"].AsString().value(), "\n\t\\\"");
+}
