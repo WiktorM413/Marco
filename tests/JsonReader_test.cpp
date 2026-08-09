@@ -431,3 +431,96 @@ TEST(JsonReaderTest, FailsWhenValueErrorIsNotIgnored)
 
 	EXPECT_FALSE(reader.IsValid());
 }
+
+TEST(JsonReaderTest, ParsesScientificNotationPositiveExponent)
+{
+	Marco::JsonReader reader;
+	Marco::JsonValue  value = reader.Parse(R"({"key":5E+2})");
+
+	ASSERT_TRUE(reader.IsValid());
+	EXPECT_EQ(value["key"].AsNumber().value(), 500);
+}
+
+TEST(JsonReaderTest, ParsesScientificNotationNegativeExponent)
+{
+	Marco::JsonReader reader;
+	Marco::JsonValue  value = reader.Parse(R"({"key":1.23e-4})");
+
+	ASSERT_TRUE(reader.IsValid());
+	EXPECT_DOUBLE_EQ(value["key"].AsNumber().value(), 1.23e-4);
+}
+
+TEST(JsonReaderTest, ParsesScientificNotationLowercaseE)
+{
+	Marco::JsonReader reader;
+	Marco::JsonValue  value = reader.Parse(R"({"key":2e3})");
+
+	ASSERT_TRUE(reader.IsValid());
+	EXPECT_EQ(value["key"].AsNumber().value(), 2000);
+}
+
+TEST(JsonReaderTest, ParsesScientificNotationUppercaseE)
+{
+	Marco::JsonReader reader;
+	Marco::JsonValue  value = reader.Parse(R"({"key":2E3})");
+
+	ASSERT_TRUE(reader.IsValid());
+	EXPECT_EQ(value["key"].AsNumber().value(), 2000);
+}
+
+TEST(JsonReaderTest, ParsesScientificNotationInArray)
+{
+	Marco::JsonReader reader;
+	Marco::JsonValue  value = reader.Parse(R"({"key":[1e1,1e2,1e3]})");
+
+	ASSERT_TRUE(reader.IsValid());
+
+	auto arr = value["key"].AsArray();
+
+	if (arr)
+	{
+		ASSERT_EQ(arr.value().get().size(), 3);
+		EXPECT_EQ(value["key"][0].AsNumber().value(), 10);
+		EXPECT_EQ(value["key"][1].AsNumber().value(), 100);
+		EXPECT_EQ(value["key"][2].AsNumber().value(), 1000);
+	}
+	else
+	{
+		FAIL() << "AsArray failed with error code: " << (int)arr.error().errorType;
+	}
+}
+
+TEST(JsonReaderTest, ParsesDeeplyNestedObject)
+{
+	Marco::JsonReader reader;
+	Marco::JsonValue  value = reader.Parse(R"({"a":{"b":{"c":{"d":{"e":1}}}}})");
+
+	ASSERT_TRUE(reader.IsValid());
+	EXPECT_EQ(value["a"]["b"]["c"]["d"]["e"].AsNumber().value(), 1);
+}
+
+TEST(JsonReaderTest, ParsesDeeplyNestedArray)
+{
+	Marco::JsonReader reader;
+	Marco::JsonValue  value = reader.Parse(R"({"key":[[[[[1]]]]]})");
+
+	ASSERT_TRUE(reader.IsValid());
+	EXPECT_EQ(value["key"][0][0][0][0][0].AsNumber().value(), 1);
+}
+
+TEST(JsonReaderTest, ParsesDeeplyNestedMixedStructure)
+{
+	Marco::JsonReader reader;
+	Marco::JsonValue  value = reader.Parse(R"({"a":[{"b":[{"c":[{"d":1}]}]}]})");
+
+	ASSERT_TRUE(reader.IsValid());
+	EXPECT_EQ(value["a"][0]["b"][0]["c"][0]["d"].AsNumber().value(), 1);
+}
+
+TEST(JsonReaderTest, FailsGracefullyOnUnclosedDeeplyNestedStructure)
+{
+	Marco::JsonReader reader;
+	reader.Parse(R"({"a":{"b":{"c":{"d":{"e":1)");
+
+	EXPECT_FALSE(reader.IsValid());
+}
