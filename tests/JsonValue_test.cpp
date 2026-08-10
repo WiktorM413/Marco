@@ -124,7 +124,7 @@ TEST(JsonValueAs, AsStringSuccess)
 	Marco::JsonValue value("hello");
 	auto result = value.AsString();
 	ASSERT_TRUE(result.has_value());
-	EXPECT_EQ(result.value(), "hello");
+	EXPECT_EQ(result.value().get(), "hello");
 }
 
 TEST(JsonValueAs, AsStringWrongType)
@@ -243,7 +243,7 @@ TEST(JsonValueSubscriptString, MutableAccessReadsBackWrittenValue)
 	auto result = constView["key"];
 
 	ASSERT_TRUE(result.has_value());
-	EXPECT_EQ(result.value().get().AsString().value(), "value");
+	EXPECT_EQ(result.value().get().AsString().value().get(), "value");
 }
 
 TEST(JsonValueSubscriptString, ConstAccessMissingKeyFails)
@@ -344,7 +344,7 @@ TEST(JsonValueNested, MutableSubscriptChainingBuildNestedStructure)
  
 	Marco::JsonValue& first = users[0];
 	EXPECT_TRUE(first.IsObject());
-	EXPECT_EQ(first["name"].AsString().value(), "John");
+	EXPECT_EQ(first["name"].AsString().value().get(), "John");
 	EXPECT_DOUBLE_EQ(first["age"].AsNumber().value(), 21);
 }
 
@@ -364,7 +364,7 @@ TEST(JsonValueNested, ConstSubscriptChainingReadsNestedStructure)
  
 	auto name = first.value().get()["name"];
 	ASSERT_TRUE(name.has_value());
-	EXPECT_EQ(name.value().get().AsString().value(), "John");
+	EXPECT_EQ(name.value().get().AsString().value().get(), "John");
  
 	auto age = first.value().get()["age"];
 	ASSERT_TRUE(age.has_value());
@@ -380,5 +380,5 @@ TEST(JsonValueNested, ConstAsObjectReferenceStaysValidWhileParentAlive)
 	auto objResult = value.AsObject();
 	ASSERT_TRUE(objResult.has_value());
 	const Marco::JsonObject& obj = objResult.value().get();
-	EXPECT_EQ(obj.at("key").AsString().value(), "value");
+	EXPECT_EQ(obj.at("key").AsString().value().get(), "value");
 }

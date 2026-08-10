@@ -76,11 +76,11 @@ std::expected<double, Marco::JsonError> Marco::JsonValue::AsNumber() const
 	return std::unexpected(JsonError{JsonErrorType::WrongType, 0});
 }
 
-std::expected<std::string, Marco::JsonError> Marco::JsonValue::AsString() const
+std::expected<std::reference_wrapper<const std::string>, Marco::JsonError> Marco::JsonValue::AsString() const
 {
 	if (auto* p = std::get_if<std::string>(&this->m_value))
 	{
-		return *p;
+		return std::cref(*p);
 	}
 
 	return std::unexpected(JsonError{JsonErrorType::WrongType, 0});
