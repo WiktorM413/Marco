@@ -1,3 +1,4 @@
+#include "marco/JsonWriter.h"
 #include <marco/JsonReader.h>
 #include <iostream>
 #include <marco/JsonValue.h>
@@ -19,19 +20,12 @@ int main()
 	)";
 
 	Marco::JsonReader jr;
-
 	auto json = jr.Parse(jsonString);
 
-	auto s = json["phone"].AsNull();
+	Marco::JsonWriter jw;
+	std::string s = jw.Write(json);
 
-	if (s)
-	{
-		std::cout << "value: " << s.value() << std::endl;
-	}
-	else
-	{
-		std::cout << "Error number: " << (int)s.error().errorType << std::endl;
-	}
+	std::cout << s << std::endl;
 		
 	return 0;
 }
