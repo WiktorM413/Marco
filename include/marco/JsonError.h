@@ -9,6 +9,7 @@ namespace Marco
 		WrongType,
 		NumberParseError,
 		NumberOutOfRange,
+		NotObject,
 		NoError
 	};
 
