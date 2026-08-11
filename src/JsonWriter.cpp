@@ -65,7 +65,7 @@ std::string Marco::JsonWriter::HandleObject(const Marco::JsonObject& obj, size_t
 {
 	if (obj.size() == 0)
 	{
-		return "{ }";
+		return "{}";
 	}
 	
 	std::string jsonString = "{\n";
@@ -78,7 +78,8 @@ std::string Marco::JsonWriter::HandleObject(const Marco::JsonObject& obj, size_t
 		const auto& value = property.second;
 		
 		jsonString += WriteIndentation(indentLevel);
-		jsonString += std::format(R"("{}": )", key);
+		jsonString += HandleString(key);
+		jsonString += ": ";
 
 		jsonString += HandleJsonValue(value, indentLevel);
 
@@ -101,7 +102,7 @@ std::string Marco::JsonWriter::HandleArray(const Marco::JsonArray& arr, size_t& 
 {
 	if (arr.size() == 0)
 	{
-		return "[ ]";
+		return "[]";
 	}
 	
 	std::string jsonString = "[\n";
@@ -127,14 +128,42 @@ std::string Marco::JsonWriter::HandleArray(const Marco::JsonArray& arr, size_t& 
 
 std::string Marco::JsonWriter::HandleString(const std::string& s)
 {
-	return std::string("\"" + s + "\"");
+	std::string escapedS = "\"";
+
+	for (size_t i = 0; i < s.length(); i++)
+	{
+		switch (s[i])
+		{
+			case '\"': escapedS += "\\\""; break;
+			case '\\': escapedS += "\\\\"; break;
+			case '\b': escapedS += "\\b";  break;
+			case '\f': escapedS += "\\f";  break;
+			case '\n': escapedS += "\\n";  break;
+			case '\r': escapedS += "\\r";  break;
+			case '\t': escapedS += "\\t";  break;
+			default:
+				if (s[i] < 0x20)
+				{
+					escapedS += std::format("\\u{:04x}", s[i]);
+				}
+				else
+				{
+					escapedS.push_back(static_cast<char>(s[i]));
+				}
+				break;
+		}
+	}
+
+	escapedS.push_back('"');
+	
+	return escapedS;
 }
 
 std::string Marco::JsonWriter::HandleNumber(const double& n)
 {
 	if (! std::isfinite(n))
 	{
-		throw std::runtime_error("Json value cannot be an inifinity");
+		throw std::runtime_error("Json number must be finite (not NaN or infinite)");
 	}
 	
 	return std::format(R"({})", n);
