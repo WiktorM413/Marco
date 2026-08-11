@@ -1,5 +1,6 @@
 #pragma once
 
+#include "marco/Json.h"
 #include "marco/JsonError.h"
 #include "marco/JsonValue.h"
 #include <string>
@@ -10,8 +11,8 @@ namespace Marco
 	{
 	public:
 
-		std::string Write(const JsonValue& json);
-		void        WriteTo(const JsonValue& json, const std::string& path);
+		std::string Write(const Json& json);
+		void        WriteTo(const Json& json, const std::string& path);
 
 	private:
 		static std::string HandleJsonValue(const JsonValue&   value, size_t& indentLevel);

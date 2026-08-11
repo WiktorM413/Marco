@@ -1,5 +1,6 @@
 #include "marco/JsonWriter.h"
 #include "marco/FileUtils.h"
+#include "marco/Json.h"
 #include "marco/JsonError.h"
 #include "marco/JsonValue.h"
 #include <cmath>
@@ -9,20 +10,11 @@
 
 static std::string WriteIndentation(const size_t& indentLevel);
 
-std::string Marco::JsonWriter::Write(const JsonValue& json)
+std::string Marco::JsonWriter::Write(const Json& json)
 {
-
-	if (! json.IsObject())
-	{
-		this->m_valid = false;
-		this->m_error = JsonErrorType::NotObject;
-		
-		return "";
-	}
-
 	size_t indentLevel = 0;
 	
-	std::string jsonString = HandleObject(json.AsObject().value(), indentLevel);
+	std::string jsonString = HandleObject(json, indentLevel);
 
 	this->m_valid = true;
 	this->m_error = JsonErrorType::NoError;
@@ -30,7 +22,7 @@ std::string Marco::JsonWriter::Write(const JsonValue& json)
 	return jsonString;
 }
 
-void Marco::JsonWriter::WriteTo(const JsonValue& json, const std::string& path)
+void Marco::JsonWriter::WriteTo(const Json& json, const std::string& path)
 {
 	std::string jsonString = this->Write(json);
 
