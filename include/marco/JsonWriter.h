@@ -1,7 +1,6 @@
 #pragma once
 
 #include "marco/Json.h"
-#include "marco/JsonError.h"
 #include "marco/JsonValue.h"
 #include <string>
 
@@ -22,8 +21,5 @@ namespace Marco
 		static std::string HandleNumber   (const double&      n);
 		static std::string HandleBool     (const bool&        b);
 		static std::string HandleNull();
-
-		JsonErrorType m_error;
-		bool          m_valid;
 	};
 }

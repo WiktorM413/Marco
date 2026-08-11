@@ -1,7 +1,6 @@
 #include "marco/JsonWriter.h"
 #include "marco/FileUtils.h"
 #include "marco/Json.h"
-#include "marco/JsonError.h"
 #include "marco/JsonValue.h"
 #include <cmath>
 #include <format>
@@ -15,9 +14,6 @@ std::string Marco::JsonWriter::Write(const Json& json)
 	size_t indentLevel = 0;
 	
 	std::string jsonString = HandleObject(json, indentLevel);
-
-	this->m_valid = true;
-	this->m_error = JsonErrorType::NoError;
 	
 	return jsonString;
 }
@@ -25,11 +21,6 @@ std::string Marco::JsonWriter::Write(const Json& json)
 void Marco::JsonWriter::WriteTo(const Json& json, const std::string& path)
 {
 	std::string jsonString = this->Write(json);
-
-	if (! this->m_valid)
-	{
-		return;
-	}
 
 	WriteFile(path, jsonString);
 }
