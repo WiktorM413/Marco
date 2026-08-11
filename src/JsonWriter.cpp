@@ -2,6 +2,7 @@
 #include "marco/FileUtils.h"
 #include "marco/JsonError.h"
 #include "marco/JsonValue.h"
+#include <cmath>
 #include <format>
 #include <stdexcept>
 
@@ -138,11 +139,16 @@ std::string Marco::JsonWriter::HandleArray(const Marco::JsonArray& arr, size_t& 
 
 std::string Marco::JsonWriter::HandleString(const std::string& s)
 {
-	return std::format(R"("{}")", s);
+	return std::string("\"" + s + "\"");
 }
 
 std::string Marco::JsonWriter::HandleNumber(const double& n)
 {
+	if (! std::isfinite(n))
+	{
+		throw std::runtime_error("Json value cannot be an inifinity");
+	}
+	
 	return std::format(R"({})", n);
 }
 
