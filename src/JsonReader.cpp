@@ -14,7 +14,7 @@ Marco::Json Marco::JsonReader::Parse(const std::string& jsonString)
 	size_t start = jsonString.find_first_not_of(" \t\r\n");
 	size_t end   = jsonString.find_last_not_of(" \t\r\n");
 
-	JsonValue json{};
+	JsonValue json{JsonObject{}};
 	
 	if (start == std::string::npos || jsonString[start] != '{' || jsonString[end] != '}')
 	{

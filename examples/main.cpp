@@ -1,3 +1,4 @@
+#include "marco/Json.h"
 #include "marco/JsonWriter.h"
 #include <marco/JsonReader.h>
 #include <iostream>
@@ -20,7 +21,7 @@ int main()
 	)";
 
 	Marco::JsonReader jr;
-	auto json = jr.Parse(jsonString);
+	Marco::Json json = jr.Parse(jsonString);
 
 	Marco::JsonWriter jw;
 	std::string s = jw.Write(json);
