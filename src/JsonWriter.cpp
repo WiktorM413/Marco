@@ -74,6 +74,11 @@ std::string Marco::JsonWriter::HandleJsonValue(const Marco::JsonValue& value, si
 
 std::string Marco::JsonWriter::HandleObject(const Marco::JsonObject& obj, size_t& indentLevel)
 {
+	if (obj.size() == 0)
+	{
+		return "{ }";
+	}
+	
 	std::string jsonString = "{\n";
 
 	indentLevel += 4;
@@ -105,6 +110,11 @@ std::string Marco::JsonWriter::HandleObject(const Marco::JsonObject& obj, size_t
 
 std::string Marco::JsonWriter::HandleArray(const Marco::JsonArray& arr, size_t& indentLevel)
 {
+	if (arr.size() == 0)
+	{
+		return "[ ]";
+	}
+	
 	std::string jsonString = "[\n";
 
 	indentLevel += 4;
