@@ -34,6 +34,11 @@ void Marco::JsonWriter::WriteTo(const JsonValue& json, const std::string& path)
 {
 	std::string jsonString = this->Write(json);
 
+	if (! this->m_valid)
+	{
+		return;
+	}
+
 	WriteFile(path, jsonString);
 }
 
