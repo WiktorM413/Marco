@@ -14,7 +14,7 @@ TEST(JsonWriterObject, EmptyObjectProducesEmptyBraces)
 	EXPECT_EQ(writer.Write(json), "{}");
 }
 
-TEST(JsonWriterObject, SinglePropertyIsIdentedOneLevel)
+TEST(JsonWriterObject, SinglePropertyIsIndentedOneLevel)
 {
 	Marco::Json json{{"key", "value"}};
 	Marco::JsonWriter writer;
@@ -22,7 +22,7 @@ TEST(JsonWriterObject, SinglePropertyIsIdentedOneLevel)
 	EXPECT_EQ(writer.Write(json), "{\n    \"key\": \"value\"\n}");
 }
 
-TEST(JsonWriterObject, NestedObjectIndentsOneLevelDepper)
+TEST(JsonWriterObject, NestedObjectIndentsOneLevelDeeper)
 {
 	Marco::JsonObject inner{{"inner", "value"}};
 	Marco::Json       json{{"outer", inner}};
@@ -31,7 +31,7 @@ TEST(JsonWriterObject, NestedObjectIndentsOneLevelDepper)
 	EXPECT_EQ(writer.Write(json), "{\n    \"outer\": {\n        \"inner\": \"value\"\n    }\n}");
 }
 
-TEST(JsonWriterObject, MultiplePropertiesAppearOnSeperateLines)
+TEST(JsonWriterObject, MultiplePropertiesAppearOnSeparateLines)
 {
 	Marco::Json json{{"a", 1}, {"b", 2}};
 	Marco::JsonWriter writer;
@@ -47,7 +47,7 @@ TEST(JsonWriterArray, EmptyArrayProducesEmptyBrackets)
 	EXPECT_EQ(writer.Write(json), "{\n    \"arr\": []\n}");
 }
 
-TEST(JsonWriterArray, ArrayOfScalarsIndentsOneLevelDeeprThanObject)
+TEST(JsonWriterArray, ArrayOfScalarsIndentsOneLevelDeeperThanObject)
 {
 	Marco::JsonArray arr{1, 2, 3};
 	Marco::Json      json{{"arr", arr}};
