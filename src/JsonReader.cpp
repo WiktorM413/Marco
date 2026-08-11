@@ -1,5 +1,6 @@
 #include "marco/JsonReader.h"
 #include "marco/FileUtils.h"
+#include "marco/Json.h"
 #include "marco/JsonError.h"
 #include "marco/JsonValue.h"
 #include <cctype>
@@ -8,12 +9,12 @@
 
 Marco::JsonReader::JsonReader(): m_error(JsonError{JsonErrorType::NoError, 0}), m_valid(false) { }
 
-Marco::JsonValue Marco::JsonReader::Parse(const std::string& jsonString)
+Marco::Json Marco::JsonReader::Parse(const std::string& jsonString)
 {
 	size_t start = jsonString.find_first_not_of(" \t\r\n");
 	size_t end   = jsonString.find_last_not_of(" \t\r\n");
 
-	JsonValue json{};
+	JsonValue json{JsonObject{}};
 	
 	if (start == std::string::npos || jsonString[start] != '{' || jsonString[end] != '}')
 	{
@@ -22,7 +23,7 @@ Marco::JsonValue Marco::JsonReader::Parse(const std::string& jsonString)
 
 		JsonValue emptyValue{};
 		
-		return json;
+		return Json{};
 	}
 
 	size_t index = start + 1;
@@ -34,10 +35,10 @@ Marco::JsonValue Marco::JsonReader::Parse(const std::string& jsonString)
 		this->m_valid = true;
 	}
 
-	return json;
+	return json.AsObject()->get();
 }
 
-Marco::JsonValue Marco::JsonReader::Parse(std::istream& jsonFile)
+Marco::Json Marco::JsonReader::Parse(std::istream& jsonFile)
 {
 	return this->Parse(ReadFile(jsonFile));
 }

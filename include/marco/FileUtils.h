@@ -4,5 +4,10 @@
 #include <iosfwd>
 
 
-std::string ReadFile(const std::string&   filepath);
-std::string ReadFile(std::istream&        file);
+namespace Marco
+{
+	std::string ReadFile(const std::string&   filepath);
+	std::string ReadFile(std::istream&        file);
+	
+	void WriteFile(const std::string& filePath, const std::string& content);
+}

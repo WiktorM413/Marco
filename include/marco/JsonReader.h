@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include "marco/Json.h"
 #include "marco/JsonError.h"
 #include "marco/JsonValue.h"
 
@@ -11,8 +12,8 @@ namespace Marco
 	public:
 		JsonReader();
 		
-		JsonValue Parse(const std::string&  jsonString);
-		JsonValue Parse(std::istream& jsonFile);
+		Json Parse(const std::string&  jsonString);
+		Json Parse(std::istream& jsonFile);
 
 		JsonError Error();
 		bool      IsValid();

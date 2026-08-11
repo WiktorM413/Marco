@@ -6,7 +6,7 @@
 #include <stdexcept>
 
 
-std::string ReadFile(const std::string& filepath)
+std::string Marco::ReadFile(const std::string& filepath)
 {
 	std::ifstream file(filepath, std::ios::binary);
 
@@ -34,9 +34,18 @@ std::string ReadFile(const std::string& filepath)
 	return content;
 }
 
-std::string ReadFile(std::istream& file)
+std::string Marco::ReadFile(std::istream& file)
 {
 	std::ostringstream ss;
 	ss << file.rdbuf();
 	return ss.str();
+}
+
+void Marco::WriteFile(const std::string& filePath, const std::string& content)
+{
+	std::ofstream jsonFile(filePath);
+
+	jsonFile << content;
+	
+	jsonFile.close();
 }

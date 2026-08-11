@@ -41,7 +41,7 @@ namespace Marco
 		std::expected<std::nullptr_t,                            JsonError> AsNull()   const;
 		std::expected<bool,                                      JsonError> AsBool()   const;
 		std::expected<double,                                    JsonError> AsNumber() const;
-		std::expected<std::string,                               JsonError> AsString() const;
+		std::expected<std::reference_wrapper<const std::string>, JsonError> AsString() const;
 		std::expected<std::reference_wrapper<const JsonObject>,  JsonError> AsObject() const;
 		std::expected<std::reference_wrapper<const JsonArray>,   JsonError> AsArray()  const;
 
