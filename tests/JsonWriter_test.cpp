@@ -63,7 +63,7 @@ TEST(JsonWriterArray, ArrayOfObjectsIndentsNestedPropertiesTwoLevelsDeeper)
 	Marco::Json       json{{"users", users}};
 	Marco::JsonWriter writer;
 
-	EXPECT_EQ(writer.Write(json), "{\n    \"users\": [\n        {\n            \"age\": 21,\n            \"name\": \"John\"\n        }\n    ]\n}");
+	EXPECT_EQ(writer.Write(json), "{\n    \"users\": [\n        {\n            \"name\": \"John\",\n            \"age\": 21\n        }\n    ]\n}");
 }
 
 TEST(JsonWriterArray, NestedArrayIndentsOneLevelDeeper)
