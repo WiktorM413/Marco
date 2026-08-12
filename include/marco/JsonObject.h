@@ -2,6 +2,7 @@
 
 #include "marco/JsonError.h"
 #include <expected>
+#include <functional>
 #include <initializer_list>
 #include <list>
 #include <string>

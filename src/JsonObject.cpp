@@ -9,9 +9,15 @@
 
 Marco::JsonObject::JsonObject(std::initializer_list<Entry> init)
 {
-	for (auto& entry : init)
+	for (const auto& entry : init)
 	{
-		this->entries.emplace_back(std::move(entry.first), std::move(entry.second));
+		auto it = this->index.find(entry.first);
+		if (it != this->index.end())
+		{
+			it->second->second = entry.second;
+			continue;
+		}
+		this->entries.emplace_back(entry.first, entry.second);
 		this->index.emplace(entries.back().first, std::prev(entries.end()));
 	}
 }
