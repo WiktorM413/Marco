@@ -3,18 +3,17 @@
 #include <cstddef>
 #include <expected>
 #include <functional>
-#include <map>
 #include <string>
 #include <variant>
 #include <vector>
 #include "marco/JsonError.h"
-
+#include "marco/JsonObject.h"
 
 namespace Marco
 {
 	class JsonValue;
+	class JsonObject;
 
-	using JsonObject = std::map<std::string, JsonValue>;
 	using JsonArray  = std::vector<JsonValue>;
 
 	// TODO: Add preserving insertion order for a map
