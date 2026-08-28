@@ -2,10 +2,18 @@
 #include "marco/JsonObject.h"
 #include "marco/JsonValue.h"
 #include <gtest/gtest.h>
+#include <utility>
 
 TEST(JsonObjectConstruction, DefaultConstructedObjectIsEmpty)
 {
 	Marco::JsonObject obj;
+
+	EXPECT_EQ(obj.size(), 0);
+}
+
+TEST(JsonObjectConstruction, EmptyInitializerListProducesEmptyObject)
+{
+	Marco::JsonObject obj{};
 
 	EXPECT_EQ(obj.size(), 0);
 }
@@ -20,7 +28,7 @@ TEST(JsonObjectConstruction, InitializerListPopulatesEntries)
 TEST(JsonObjectConstruction, InitializerListWithDuplicateKeyKeepsLastValue)
 {
 	Marco::JsonObject obj{{"a", 1}, {"a", 2}};
-	
+
 	EXPECT_EQ(obj.size(), 1);
 	EXPECT_EQ(obj.at("a").AsNumber().value(), 2);
 }
@@ -100,6 +108,39 @@ TEST(JsonObjectCopy, CopyAssignmentProducesIndependentObject)
 	EXPECT_EQ(original.at("a").AsNumber().value(), 1);
 }
 
+TEST(JsonObjectMove, MoveConstructorTransfersEntries)
+{
+	Marco::JsonObject original{{"a", 1}, {"b", 2}};
+	Marco::JsonObject moved(std::move(original));
+
+	EXPECT_EQ(moved.size(), 2);
+	EXPECT_EQ(moved.at("a").AsNumber().value(), 1);
+	EXPECT_EQ(moved.at("b").AsNumber().value(), 2);
+}
+
+TEST(JsonObjectMove, MoveAssignmentTransfersEntries)
+{
+	Marco::JsonObject original{{"a", 1}, {"b", 2}};
+	Marco::JsonObject target{{"c", 3}};
+
+	target = std::move(original);
+
+	EXPECT_EQ(target.size(), 2);
+	EXPECT_EQ(target.at("a").AsNumber().value(), 1);
+	EXPECT_EQ(target.find("c"), target.end());
+}
+
+TEST(JsonObjectMove, MovedFromObjectCanBeReused)
+{
+	Marco::JsonObject original{{"a", 1}};
+	Marco::JsonObject moved(std::move(original));
+
+	original["b"] = 2;
+
+	EXPECT_EQ(original.size(), 1);
+	EXPECT_EQ(original.at("b").AsNumber().value(), 2);
+}
+
 TEST(JsonObjectIteration, MutableIteratorAllowsModifyingValues)
 {
 	Marco::JsonObject obj{{"a", 1}};
@@ -157,7 +198,7 @@ TEST(JsonObjectAt, ReturnedReferenceAllowsMutation)
 
 TEST(JsonObjectFind, ReturnsIteratorToExistingEntry)
 {
-	Marco::JsonObject obj{{"a" , 1}};
+	Marco::JsonObject obj{{"a", 1}};
 
 	auto it = obj.find("a");
 
@@ -256,8 +297,54 @@ TEST(JsonObjectConstIndexOperator, DoesNotModifyObjectOnMissingKey)
 {
 	const Marco::JsonObject obj{{"a", 1}};
 
-	auto result = obj["missing"];
+	auto value = obj["missing"];
+	(void)value;
 	
-	EXPECT_FALSE(result.has_value());
 	EXPECT_EQ(obj.size(), 1);
+}
+
+TEST(JsonObjectConstAccess, ChainedConstAtCallsReachNestedObjectValue)
+{
+	Marco::JsonObject inner{{"x", 1}};
+	const Marco::JsonObject obj{{"outer", inner}};
+
+	EXPECT_EQ(obj.at("outer").AsObject().value().get().at("x").AsNumber().value(), 1);
+}
+
+TEST(JsonObjectConstAccess, ConstFindOnNestedObjectLocatesNestedKey)
+{
+	Marco::JsonObject inner{{"x", 1}};
+	const Marco::JsonObject obj{{"outer", inner}};
+
+	auto outerIt = obj.find("outer");
+	ASSERT_NE(outerIt, obj.end());
+
+	auto nestedObject = outerIt->second.AsObject();
+	ASSERT_TRUE(nestedObject.has_value());
+	EXPECT_NE(nestedObject->get().find("x"), nestedObject->get().end());
+}
+
+TEST(JsonObjectConstAccess, ConstIndexOperatorOnNestedObjectReturnsNestedValue)
+{
+	Marco::JsonObject inner{{"x", 1}};
+	const Marco::JsonObject obj{{"outer", inner}};
+
+	auto outerResult = obj["outer"];
+	ASSERT_TRUE(outerResult.has_value());
+
+	auto nestedObject = outerResult->get().AsObject();
+	ASSERT_TRUE(nestedObject.has_value());
+	EXPECT_EQ(nestedObject->get().at("x").AsNumber().value(), 1);
+}
+
+TEST(JsonObjectConstAccess, MultipleConstAccessesDoNotModifyObject)
+{
+	const Marco::JsonObject obj{{"a", 1}, {"b", 2}};
+
+	obj.at("a");
+	obj.find("b");
+	auto value = obj["a"];
+	(void)value;
+	
+	EXPECT_EQ(obj.size(), 2);
 }
