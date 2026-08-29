@@ -1,8 +1,8 @@
-#include "marco/Json.h"
-#include "marco/JsonWriter.h"
-#include <marco/JsonReader.h>
+#include <marco/json/Json.h>
+#include <marco/json/JsonWriter.h>
+#include <marco/json/JsonReader.h>
 #include <iostream>
-#include <marco/JsonValue.h>
+#include <marco/json/JsonValue.h>
 
 int main()
 {

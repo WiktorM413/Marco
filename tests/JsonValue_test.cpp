@@ -1,5 +1,5 @@
-#include "marco/JsonError.h"
-#include "marco/JsonValue.h"
+#include "marco/json/JsonError.h"
+#include "marco/json/JsonValue.h"
 #include <gtest/gtest.h>
 
 TEST(JsonValueConstruct, DefaultIsNull)
