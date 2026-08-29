@@ -1,7 +1,7 @@
 #pragma once
 
-#include "marco/Json.h"
-#include "marco/JsonValue.h"
+#include "marco/json/Json.h"
+#include "marco/json/JsonValue.h"
 #include <string>
 
 namespace Marco
