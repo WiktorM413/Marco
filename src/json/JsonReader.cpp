@@ -20,8 +20,6 @@ Marco::Json Marco::JsonReader::Parse(const std::string& jsonString)
 	{
 		this->m_error = JsonError{JsonErrorType::InvalidFormat, 0};
 		this->m_valid = false;
-
-		JsonValue emptyValue{};
 		
 		return Json{};
 	}
