@@ -2,15 +2,17 @@
 
 #include "marco/toml/TomlError.h"
 #include <expected>
+#include <functional>
+#include <map>
 #include <string>
-#include <unordered_map>
 #include <variant>
 #include <vector>
+
 namespace Marco
 {
 	class TomlValue;
 
-	using TomlObject = std::unordered_map<std::string, TomlValue>;
+	using TomlObject = std::map<std::string, TomlValue>;
 	using TomlArray  = std::vector<TomlValue>;
 	
 	class TomlValue
