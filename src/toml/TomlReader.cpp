@@ -8,11 +8,10 @@ Marco::TomlReader::TomlReader(): m_error(TomlError{TomlErrorType::NoError, 0}), 
 Marco::Toml Marco::TomlReader::Parse(const std::string& tomlString)
 {
 	size_t start = tomlString.find_first_not_of(" \t\r\n");
-	size_t end   = tomlString.find_last_not_of(" \t\r\n");
 
 	TomlValue toml{TomlObject{}};
 
-	if (start == std::string::npos || tomlString[start] != '{' || tomlString[end] != '}')
+	if (start == std::string::npos)
 	{
 		this->m_error = TomlError{TomlErrorType::InvalidFormat, 0};
 		this->m_valid = false;
