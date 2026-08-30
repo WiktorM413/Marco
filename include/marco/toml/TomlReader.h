@@ -29,6 +29,6 @@ namespace Marco
 		static TomlError HandleEscape      (TomlValue& tomlValue, const std::string& tomlString, size_t& index);
 		
 		TomlError m_error;
-		bool      m_bool;
+		bool      m_valid;
 	};
 }
