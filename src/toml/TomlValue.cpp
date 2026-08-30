@@ -80,7 +80,7 @@ std::expected<std::reference_wrapper<const Marco::TomlObject>, Marco::TomlError>
 {
 	if (auto* p = std::get_if<TomlObject>(&this->m_value))
 	{
-		return std::ref(*p);
+		return std::cref(*p);
 	}
 
 	return std::unexpected(TomlError{TomlErrorType::WrongType, 0});
@@ -90,7 +90,7 @@ std::expected<std::reference_wrapper<const Marco::TomlArray>, Marco::TomlError> 
 {
 	if (auto* p = std::get_if<TomlArray>(&this->m_value))
 	{
-		return std::ref(*p);
+		return std::cref(*p);
 	}
 
 	return std::unexpected(TomlError{TomlErrorType::WrongType, 0});
