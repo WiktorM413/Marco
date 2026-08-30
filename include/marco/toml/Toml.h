@@ -3,4 +3,7 @@
 #include "marco/toml/TomlValue.h"
 
 
-using Toml = Marco::TomlValue;
+namespace Marco
+{
+	using Toml = TomlValue;
+}
