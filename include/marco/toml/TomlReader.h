@@ -27,8 +27,9 @@ namespace Marco
 		static TomlError HandleString      (TomlValue& tomlValue, const std::string& tomlString, size_t& index);
 		static TomlError HandleBool        (TomlValue& tomlValue, const std::string& tomlString, size_t& index);
 		static TomlError HandleNull        (TomlValue& tomlValue, const std::string& tomlString, size_t& index);
-		static TomlError HandleObject      (TomlValue& tomlValue, const std::string& tomlString, size_t& index); // leaves index at the closest character that either isnt a '=' or a whitespace
+		static TomlError HandleTables      (TomlValue& tomlValue, const std::string& tomlString, size_t& index); // leaves index right after the first \n character it encounters
 		static TomlError HandleArray       (TomlValue& tomlValue, const std::string& tomlString, size_t& index);
+		static TomlError HandleInlineTables(TomlValue& tomlValue, const std::string& tomlString, size_t& index);
 		
 		static std::expected<std::string, TomlError> HandleStringKey       (const std::string& tomlString, size_t& index); // leaves index at the closest character that either isnt a '=' or a whitespace
 		static std::expected<std::string, TomlError> HandleStringLiteralKey(const std::string& tomlString, size_t& index); // leaves index at the closest character that either isnt a '=' or a whitespace

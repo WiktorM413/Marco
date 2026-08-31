@@ -73,7 +73,7 @@ Marco::TomlError Marco::TomlReader::FormTomlFromString(Marco::TomlValue& tomlVal
 			error = HandleComment(tomlValue, tomlString, index);
 			break;
 		case '[':
-			error = HandleObject(tomlValue, tomlString, index);
+			error = HandleTables(tomlValue, tomlString, index);
 			break;
 		case '\"':
 		{
@@ -162,8 +162,38 @@ Marco::TomlError Marco::TomlReader::HandleNull(Marco::TomlValue& tomlValue, cons
 	
 }
 
-Marco::TomlError Marco::TomlReader::HandleObject(Marco::TomlValue& tomlValue, const std::string& tomlString, size_t& index)
+Marco::TomlError Marco::TomlReader::HandleTables(Marco::TomlValue& tomlValue, const std::string& tomlString, size_t& index)
 {
+	index++;
+	
+	TomlValue* currValue = &tomlValue;
+	std::string key{};
+
+	for (; index < tomlString.length(); index++)
+	{
+		if (tomlString[index] == ']')
+		{
+			break;
+		}
+		
+		if (tomlString[index] == '.')
+		{
+			currValue = &(*currValue)[key];
+			key = "";
+
+			index++;
+
+			if (index >= tomlString.length() || tomlString[index] == ']')
+			{
+				return TomlError{TomlErrorType::InvalidFormat, index};
+			}
+		}
+
+		key.push_back(tomlString[index]);
+	}
+
+	currValue = &(*currValue)[key];
+
 	
 }
 
