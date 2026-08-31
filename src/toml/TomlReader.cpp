@@ -74,7 +74,7 @@ Marco::TomlError Marco::TomlReader::FormTomlFromString(Marco::TomlValue& rootTom
 			break;
 		case '[':
 			error = HandleTables(rootTomlValue, currTomlValue, tomlString, index);
-			return error;
+			break;
 		case '\"':
 		{
 			auto result = HandleStringKey(tomlString, index);
@@ -166,7 +166,7 @@ Marco::TomlError Marco::TomlReader::HandleTables(Marco::TomlValue& rootTomlValue
 {
 	index++;
 	
-	TomlValue* currValue = &currTomlValue;
+	currTomlValue = rootTomlValue;
 	std::string key{};
 
 	if (tomlString[index] == '[')
@@ -190,7 +190,7 @@ Marco::TomlError Marco::TomlReader::HandleTables(Marco::TomlValue& rootTomlValue
 		
 		if (tomlString[index] == '.')
 		{
-			currValue = &(*currValue)[key];
+			currTomlValue = currTomlValue[key];
 			key = "";
 
 			index++;
@@ -209,7 +209,7 @@ Marco::TomlError Marco::TomlReader::HandleTables(Marco::TomlValue& rootTomlValue
 		return TomlError{TomlErrorType::InvalidFormat, index};
 	}
 
-	currValue = &(*currValue)[key];
+	currTomlValue = currTomlValue[key];
 
 	for (; index < tomlString.length(); index++)
 	{
@@ -224,7 +224,7 @@ Marco::TomlError Marco::TomlReader::HandleTables(Marco::TomlValue& rootTomlValue
 		}
 	}
 
-	TomlError error = FormTomlFromString(rootTomlValue, *currValue, tomlString, index);
+	TomlError error = FormTomlFromString(rootTomlValue, currTomlValue, tomlString, index);
 
 	return error;
 }
@@ -243,7 +243,7 @@ Marco::TomlError Marco::TomlReader::HandleArrayOfTables(Marco::TomlValue& rootTo
 {
 	index++;
 
-	TomlValue* currValue = &currTomlValue;
+	currTomlValue = rootTomlValue;
 	std::string key{};
 
 	for (; index < tomlString.length(); index++)
@@ -260,7 +260,7 @@ Marco::TomlError Marco::TomlReader::HandleArrayOfTables(Marco::TomlValue& rootTo
 		
 		if (tomlString[index] == '.')
 		{
-			currValue = &(*currValue)[key];
+			currTomlValue = currTomlValue[key];
 			key = "";
 
 			index++;
@@ -279,7 +279,7 @@ Marco::TomlError Marco::TomlReader::HandleArrayOfTables(Marco::TomlValue& rootTo
 		return TomlError{TomlErrorType::InvalidFormat, index};
 	}
 
-	currValue = &(*currValue)[key];
+	currTomlValue = currTomlValue[key];
 
 	for (; index < tomlString.length(); index++)
 	{
@@ -294,7 +294,7 @@ Marco::TomlError Marco::TomlReader::HandleArrayOfTables(Marco::TomlValue& rootTo
 		}
 	}
 
-	TomlError error = FormTomlFromString(rootTomlValue, *currValue, tomlString, index);
+	TomlError error = FormTomlFromString(rootTomlValue, currTomlValue, tomlString, index);
 
 	return error;
 }
