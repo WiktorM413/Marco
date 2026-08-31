@@ -243,7 +243,29 @@ std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleStringLite
 
 std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleBareKey(TomlValue& tomlValue, const std::string& tomlString, size_t& index)
 {
-	
+	std::string key{};
+
+	for (; index < tomlString.length(); index++)
+	{
+		if (std::isspace(tomlString[index]))
+		{
+			break;
+		}
+		
+		if (!(tomlString[index] >= 'a' && tomlString[index] <= 'z') && !(tomlString[index] >= 'A' && tomlString[index] <= 'Z') && !(tomlString[index] >= '0' && tomlString[index] <= '9'))
+		{
+			return std::unexpected(TomlError{TomlErrorType::InvalidFormat, index});
+		}
+
+		key.push_back(tomlString[index]);
+	}
+
+	if (index >= tomlString.length())
+	{
+		return std::unexpected(TomlError{TomlErrorType::InvalidFormat, index});
+	}
+
+	return key;
 }
 
 Marco::TomlError Marco::TomlReader::HandleEscape(std::string& value, const std::string& tomlString, size_t& index)
