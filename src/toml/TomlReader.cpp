@@ -260,7 +260,7 @@ std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleBareKey(co
 			break;
 		}
 		
-		if (!(tomlString[index] >= 'a' && tomlString[index] <= 'z') && !(tomlString[index] >= 'A' && tomlString[index] <= 'Z') && !(tomlString[index] >= '0' && tomlString[index] <= '9'))
+		if (!(tomlString[index] >= 'a' && tomlString[index] <= 'z') && !(tomlString[index] >= 'A' && tomlString[index] <= 'Z') && !(tomlString[index] >= '0' && tomlString[index] <= '9') && tomlString[index] != '_')
 		{
 			return std::unexpected(TomlError{TomlErrorType::InvalidFormat, index});
 		}
