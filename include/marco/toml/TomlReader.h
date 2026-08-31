@@ -22,15 +22,16 @@ namespace Marco
 	private:
 		static TomlError FormTomlFromString (TomlValue& rootTomlValue, TomlValue& currTomlValue, const std::string& tomlString, size_t& index); // expects index to point to the first character of the line. Can be a whitespace
 		static TomlError HandleTables       (TomlValue& rootTomlValue, TomlValue& currTomlValue, const std::string& tomlString, size_t& index); // leaves index right after the first \n character it encounters
-		static TomlError HandleInlineTables (TomlValue& rootTomlValue, TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
 		static TomlError HandleArrayOfTables(TomlValue& rootTomlValue, TomlValue& currTomlValue, const std::string& tomlString, size_t& index); // leaves index right after the first \n character it encounters
 	
-		static TomlError FormTomlValue(TomlValue& currTomlValue, const std::string& tomlString, size_t& index); // leaves index right after the first \n character it encounters
-		static TomlError HandleNumber (TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
-		static TomlError HandleString (TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
-		static TomlError HandleBool   (TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
-		static TomlError HandleNull   (TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
-		static TomlError HandleArray  (TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
+		static TomlError FormTomlValue      (TomlValue& currTomlValue, const std::string& tomlString, size_t& index); // leaves index right after the first \n character it encounters
+		static TomlError HandleNumber       (TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
+		static TomlError HandleString       (TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
+		static TomlError HandleStringLiteral(TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
+		static TomlError HandleBool         (TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
+		static TomlError HandleNull         (TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
+		static TomlError HandleArray        (TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
+		static TomlError HandleInlineTables (TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
 		
 		
 		static std::expected<std::string, TomlError> HandleStringKey       (const std::string& tomlString, size_t& index); // leaves index at the closest character that either isnt a '=' or a whitespace
@@ -39,6 +40,8 @@ namespace Marco
 
 		static TomlError HandleComment(const std::string& tomlString, size_t& index); // leaves index right after the first \n character it encounters
 		static TomlError HandleEscape(std::string& value, const std::string& tomlString, size_t& index);
+
+		static std::expected<int, TomlError> ParseTomlInt(std::string_view s);
 		
 		TomlError m_error;
 		bool      m_valid;

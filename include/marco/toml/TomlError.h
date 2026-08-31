@@ -7,6 +7,7 @@ namespace Marco
 	{
 		InvalidFormat,
 		WrongType,
+		InvalidNumberFormat,
 		NoError
 	};
 
