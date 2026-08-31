@@ -271,11 +271,27 @@ Marco::TomlError Marco::TomlReader::FormTomlValue(Marco::TomlValue& currTomlValu
 	
 	if (tomlString[index] == '\'')
 	{
-		error = HandleStringLiteral(currTomlValue, tomlString, index);
+		index++;
+		
+		bool isMultiline = false;
+		if (index + 1 < tomlString.length() && tomlString[index] == '\'' && tomlString[index + 1] == '\'')
+		{
+			index += 2;
+			
+			isMultiline = true;
+		}
+		
+		error = HandleStringLiteral(currTomlValue, tomlString, index, isMultiline);
 	}
 	else if (tomlString[index] == '\"')
 	{
-		error = HandleString(currTomlValue, tomlString, index);
+		bool isMultiline = false;
+		if (index + 2 < tomlString.length() && tomlString[index + 1] == '\"' && tomlString[index + 2] == '\"')
+		{
+			isMultiline = true;
+		}
+		
+		error = HandleString(currTomlValue, tomlString, index, isMultiline);
 	}
 	else if (tomlString[index] >= '0' && tomlString[index] <= '9')
 	{
@@ -323,12 +339,73 @@ Marco::TomlError Marco::TomlReader::HandleNumber(Marco::TomlValue& currTomlValue
 	return TomlError{TomlErrorType::NoError, index};
 }
 
-Marco::TomlError Marco::TomlReader::HandleString(Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
+Marco::TomlError Marco::TomlReader::HandleString(Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index, bool isMultiline)
 {
+	std::string value{};
 	
+	if (isMultiline)
+	{
+		for (; index < tomlString.length(); index++)
+		{
+			if (tomlString[index] == '\\')
+			{
+				index++;
+				for (; index < tomlString.length(); index++)
+				{
+					if (! std::isspace(tomlString[index]))
+					{
+						break;
+					}
+				}
+			}
+
+			if (tomlString[index] == '\"')
+			{
+				if (index + 2 < tomlString.length() && tomlString[index + 1] == '\"' && tomlString[index + 2] == '\"')
+				{
+					currTomlValue = value;
+					return TomlError{TomlErrorType::NoError, index};
+				}
+			}
+
+			value.push_back(tomlString[index]);
+		}
+
+		return TomlError{TomlErrorType::InvalidFormat, index};
+	}
+	else
+	{
+		for (; index < tomlString.length(); index++)
+		{
+			if (tomlString[index] == '\n')
+			{
+				return TomlError{TomlErrorType::InvalidFormat, index};
+			}
+			
+			if (tomlString[index] == '\\')
+			{
+				TomlError error = HandleEscape(value, tomlString, index);
+
+				if (error.errorType != TomlErrorType::NoError)
+				{
+					return error;
+				}
+			}
+
+			if (tomlString[index] == '\"')
+			{
+				currTomlValue = value;
+				return TomlError{TomlErrorType::NoError, index};
+			}
+
+			value.push_back(tomlString[index]);
+		}
+	}
+
+	return TomlError{TomlErrorType::InvalidFormat, index};
 }
 
-Marco::TomlError Marco::TomlReader::HandleStringLiteral(Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
+Marco::TomlError Marco::TomlReader::HandleStringLiteral(Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index, bool isMultiline)
 {
 	
 }
@@ -371,8 +448,6 @@ std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleStringKey(
 			{
 				return std::unexpected(error);
 			}
-
-			continue;
 		}
 		
 		key.push_back(tomlString[index]);
@@ -502,14 +577,14 @@ Marco::TomlError Marco::TomlReader::HandleEscape(std::string& value, const std::
 
 	switch (tomlString[index])
 	{
-		case '\"': value.push_back('\"'); break;
-		case '\\': value.push_back('\\'); break;
-		case '/': value.push_back ('/');  break;
-		case 'b': value.push_back ('\b'); break;
-		case 'f': value.push_back ('\f'); break;
-		case 'n': value.push_back ('\n'); break;
-		case 'r': value.push_back ('\r'); break;
-		case 't': value.push_back ('\t'); break;
+		case '\"': value.push_back('\"'); index++;  break;
+		case '\\': value.push_back('\\'); index++;  break;
+		case '/':  value.push_back ('/'); index++;  break;
+		case 'b': value.push_back ('\b'); index++;  break;
+		case 'f': value.push_back ('\f'); index++;  break;
+		case 'n': value.push_back ('\n'); index++;  break;
+		case 'r': value.push_back ('\r'); index++;  break;
+		case 't': value.push_back ('\t'); index++;  break;
 		default:
 			return TomlError{TomlErrorType::InvalidFormat, index};
 	}
