@@ -310,8 +310,17 @@ Marco::TomlError Marco::TomlReader::HandleNumber(Marco::TomlValue& currTomlValue
 
 		value.push_back(tomlString[index]);
 	}
-
 	
+	auto result = ParseTomlInt(value);
+
+	if (! result.has_value())
+	{
+		return TomlError{result.error().errorType, index};
+	}
+
+	currTomlValue = result.value();
+	
+	return TomlError{TomlErrorType::NoError, index};
 }
 
 Marco::TomlError Marco::TomlReader::HandleString(Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
