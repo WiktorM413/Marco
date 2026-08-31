@@ -88,7 +88,7 @@ Marco::TomlError Marco::TomlReader::FormTomlFromString(Marco::TomlValue& rootTom
 				}
 				
 				std::string key = result.value();
-				error = FormTomlValue(rootTomlValue, currTomlValue[key], tomlString, index);
+				error = FormTomlValue(currTomlValue[key], tomlString, index);
 				break;
 			}
 			case '\'':
@@ -102,7 +102,7 @@ Marco::TomlError Marco::TomlReader::FormTomlFromString(Marco::TomlValue& rootTom
 				}
 				
 				std::string key = result.value();
-				error = FormTomlValue(rootTomlValue, currTomlValue[key], tomlString, index);
+				error = FormTomlValue(currTomlValue[key], tomlString, index);
 				break;
 			}
 			default:
@@ -141,6 +141,11 @@ Marco::TomlError Marco::TomlReader::HandleTables(Marco::TomlValue& rootTomlValue
 
 	for (; index < tomlString.length(); index++)
 	{
+		if (tomlString[index] == '#')
+		{
+			return TomlError{TomlErrorType::InvalidFormat, index};
+		}
+		
 		if (tomlString[index] == ']')
 		{
 			break;
@@ -204,6 +209,11 @@ Marco::TomlError Marco::TomlReader::HandleArrayOfTables(Marco::TomlValue& rootTo
 
 	for (; index < tomlString.length(); index++)
 	{
+		if (tomlString[index] == '#')
+		{
+			return TomlError{TomlErrorType::InvalidFormat, index};
+		}
+		
 		if (tomlString[index] == ']')
 		{
 			break;
@@ -257,7 +267,10 @@ Marco::TomlError Marco::TomlReader::HandleArrayOfTables(Marco::TomlValue& rootTo
 
 Marco::TomlError Marco::TomlReader::FormTomlValue(Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
 {
-	
+	switch (tomlString[index])
+	{
+		
+	}
 }
 
 Marco::TomlError Marco::TomlReader::HandleNumber(Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
@@ -317,6 +330,11 @@ std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleStringKey(
 
 	for (; index < tomlString.length(); index++)
 	{
+		if (tomlString[index] == '#')
+		{
+			return std::unexpected(TomlError{TomlErrorType::InvalidFormat, index});
+		}
+		
 		if (! std::isspace(tomlString[index]) && tomlString[index] != '=')
 		{
 			break;
@@ -349,6 +367,11 @@ std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleStringLite
 
 	for (; index < tomlString.length(); index++)
 	{
+		if (tomlString[index] == '#')
+		{
+			return std::unexpected(TomlError{TomlErrorType::InvalidFormat, index});
+		}
+		
 		if (! std::isspace(tomlString[index]) && tomlString[index] != '=')
 		{
 			break;
@@ -384,6 +407,11 @@ std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleBareKey(co
 
 	for (; index < tomlString.length(); index++)
 	{
+		if (tomlString[index] == '#')
+		{
+			return std::unexpected(TomlError{TomlErrorType::InvalidFormat, index});
+		}
+		
 		if (! std::isspace(tomlString[index]) && tomlString[index] != '=')
 		{
 			break;
