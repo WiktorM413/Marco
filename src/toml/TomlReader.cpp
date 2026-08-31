@@ -297,6 +297,8 @@ Marco::TomlError Marco::TomlReader::HandleArrayOfTables(Marco::TomlValue& rootTo
 		}
 	}
 
+	currTomlValue = currTomlValue.PushBack(nullptr);
+	
 	TomlError error = FormTomlFromString(rootTomlValue, currTomlValue, tomlString, index);
 
 	return error;
