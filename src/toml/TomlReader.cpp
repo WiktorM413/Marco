@@ -227,9 +227,7 @@ Marco::TomlError Marco::TomlReader::HandleTables(Marco::TomlValue& rootTomlValue
 		}
 	}
 
-	TomlError error = FormTomlFromString(rootTomlValue, currTomlValue, tomlString, index);
-
-	return error;
+	return TomlError{TomlErrorType::NoError, index};
 }
 
 Marco::TomlError Marco::TomlReader::HandleArray(Marco::TomlValue& rootTomlValue, Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
@@ -299,9 +297,7 @@ Marco::TomlError Marco::TomlReader::HandleArrayOfTables(Marco::TomlValue& rootTo
 
 	currTomlValue = currTomlValue.PushBack(nullptr);
 	
-	TomlError error = FormTomlFromString(rootTomlValue, currTomlValue, tomlString, index);
-
-	return error;
+	return TomlError{TomlErrorType::NoError, index};
 }
 
 
