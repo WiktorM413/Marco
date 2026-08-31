@@ -29,9 +29,9 @@ namespace Marco
 		static TomlError HandleObject      (TomlValue& tomlValue, const std::string& tomlString, size_t& index);
 		static TomlError HandleArray       (TomlValue& tomlValue, const std::string& tomlString, size_t& index);
 		
-		static std::string HandleStringKey       (TomlValue& tomlValue, const std::string& tomlString, size_t& index); // leaves index at the closest letter after '='
-		static std::string HandleStringLiteralKey(TomlValue& tomlValue, const std::string& tomlString, size_t& index); // leaves index at the closest letter after '='
-		static std::string HandleBareKey         (TomlValue& tomlValue, const std::string& tomlString, size_t& index); // leaves index at the closest letter after '='
+		static std::string HandleStringKey       (TomlValue& tomlValue, const std::string& tomlString, size_t& index); // leaves index at the closest character after '='
+		static std::string HandleStringLiteralKey(TomlValue& tomlValue, const std::string& tomlString, size_t& index); // leaves index at the closest character after '='
+		static std::string HandleBareKey         (TomlValue& tomlValue, const std::string& tomlString, size_t& index); // leaves index at the closest character after '='
 		
 		TomlError m_error;
 		bool      m_valid;
