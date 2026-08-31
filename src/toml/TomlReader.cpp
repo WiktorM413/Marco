@@ -72,7 +72,7 @@ Marco::TomlError Marco::TomlReader::FormTomlFromString(Marco::TomlValue& rootTom
 		switch (tomlString[index])
 		{
 			case '#':
-				error = HandleComment(rootTomlValue, currTomlValue, tomlString, index);
+				error = HandleComment(tomlString, index);
 				break;
 			case '[':
 				error = HandleTables(rootTomlValue, currTomlValue, tomlString, index);
@@ -130,7 +130,7 @@ Marco::TomlError Marco::TomlReader::FormTomlValue(Marco::TomlValue& rootTomlValu
 	
 }
 
-Marco::TomlError Marco::TomlReader::HandleComment(Marco::TomlValue& rootTomlValue, Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
+Marco::TomlError Marco::TomlReader::HandleComment(const std::string& tomlString, size_t& index)
 {
 	index++;
 

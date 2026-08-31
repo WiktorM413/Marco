@@ -22,7 +22,6 @@ namespace Marco
 	private:
 		static TomlError FormTomlFromString (TomlValue& rootTomlValue, TomlValue& currTomlValue, const std::string& tomlString, size_t& index); // expects index to point to the first character of the line. Can be a whitespace
 		static TomlError FormTomlValue      (TomlValue& rootTomlValue, TomlValue& currTomlValue, const std::string& tomlString, size_t& index); // leaves index right after the first \n character it encounters
-		static TomlError HandleComment      (TomlValue& rootTomlValue, TomlValue& currTomlValue, const std::string& tomlString, size_t& index); // leaves index right after the first \n character it encounters
 		static TomlError HandleNumber       (TomlValue& rootTomlValue, TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
 		static TomlError HandleString       (TomlValue& rootTomlValue, TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
 		static TomlError HandleBool         (TomlValue& rootTomlValue, TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
@@ -36,6 +35,7 @@ namespace Marco
 		static std::expected<std::string, TomlError> HandleStringLiteralKey(const std::string& tomlString, size_t& index); // leaves index at the closest character that either isnt a '=' or a whitespace
 		static std::expected<std::string, TomlError> HandleBareKey         (const std::string& tomlString, size_t& index); // leaves index at the closest character that either isnt a '=' or a whitespace
 
+		static TomlError HandleComment(const std::string& tomlString, size_t& index); // leaves index right after the first \n character it encounters
 		static TomlError HandleEscape(std::string& value, const std::string& tomlString, size_t& index);
 		
 		TomlError m_error;
