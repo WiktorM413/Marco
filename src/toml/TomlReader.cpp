@@ -219,7 +219,26 @@ std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleStringKey(
 
 std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleStringLiteralKey(TomlValue& tomlValue, const std::string& tomlString, size_t& index)
 {
+	index++;
+
+	std::string key{};
 	
+	for (; index < tomlString.length(); index++)
+	{
+		if (tomlString[index] == '\'')
+		{
+			break;
+		}
+
+		key.push_back(tomlString[index]);
+	}
+
+	if (index >= tomlString.length())
+	{
+		return std::unexpected(TomlError{TomlErrorType::InvalidFormat, index});
+	}
+
+	return key;
 }
 
 std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleBareKey(TomlValue& tomlValue, const std::string& tomlString, size_t& index)
