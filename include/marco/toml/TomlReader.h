@@ -33,6 +33,8 @@ namespace Marco
 		static std::expected<std::string, TomlError> HandleStringKey       (TomlValue& tomlValue, const std::string& tomlString, size_t& index); // leaves index at the closest character after '='
 		static std::expected<std::string, TomlError> HandleStringLiteralKey(TomlValue& tomlValue, const std::string& tomlString, size_t& index); // leaves index at the closest character after '='
 		static std::expected<std::string, TomlError> HandleBareKey         (TomlValue& tomlValue, const std::string& tomlString, size_t& index); // leaves index at the closest character after '='
+
+		static TomlError HandleEscape(std::string& value, const std::string& tomlString, size_t& index);
 		
 		TomlError m_error;
 		bool      m_valid;

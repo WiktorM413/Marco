@@ -1,6 +1,9 @@
 #include "marco/toml/TomlReader.h"
+#include "marco/toml/TomlError.h"
 #include "marco/toml/TomlValue.h"
 #include "marco/utils/FileUtils.h"
+#include <cctype>
+#include <expected>
 #include <string>
 
 
@@ -74,19 +77,43 @@ Marco::TomlError Marco::TomlReader::FormTomlFromString(Marco::TomlValue& tomlVal
 			break;
 		case '\"':
 		{
-			std::string key = HandleStringKey(tomlValue, tomlString, index);
+			auto result = HandleStringKey(tomlValue, tomlString, index);
+
+			if (! result.has_value())
+			{
+				error = result.error();
+				break;
+			}
+			
+			std::string key = result.value();
 			error = FormTomlValue(tomlValue[key], tomlString, index);
 			break;
 		}
 		case '\'':
 		{
-			std::string key = HandleStringLiteralKey(tomlValue, tomlString, index);
+			auto result = HandleStringKey(tomlValue, tomlString, index);
+
+			if (! result.has_value())
+			{
+				error = result.error();
+				break;
+			}
+			
+			std::string key = result.value();
 			error = FormTomlValue(tomlValue[key], tomlString, index);
 			break;
 		}
 		default:
 		{
-			std::string key = HandleBareKey(tomlValue, tomlString, index);
+			auto result = HandleStringKey(tomlValue, tomlString, index);
+
+			if (! result.has_value())
+			{
+				error = result.error();
+				break;
+			}
+			
+			std::string key = result.value();
 			error = FormTomlValue(tomlValue[key], tomlString, index);
 			break;
 		}
@@ -102,7 +129,17 @@ Marco::TomlError Marco::TomlReader::FormTomlValue(Marco::TomlValue& tomlValue, c
 
 Marco::TomlError Marco::TomlReader::HandleComment(Marco::TomlValue& tomlValue, const std::string& tomlString, size_t& index)
 {
-	
+	index++;
+
+	for (; index < tomlString.length(); index++)
+	{
+		if (tomlString[index] == '\n')
+		{
+			break;
+		}
+	}
+
+	return TomlError{TomlErrorType::NoError, index};
 }
 
 Marco::TomlError Marco::TomlReader::HandleNumber(Marco::TomlValue& tomlValue, const std::string& tomlString, size_t& index)
@@ -136,17 +173,82 @@ Marco::TomlError Marco::TomlReader::HandleArray(Marco::TomlValue& tomlValue, con
 }
 
 
-std::string Marco::TomlReader::HandleStringKey(TomlValue& tomlValue, const std::string& tomlString, size_t& index)
+std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleStringKey(TomlValue& tomlValue, const std::string& tomlString, size_t& index)
+{
+	index++;
+
+	std::string key{};
+
+	for (; index < tomlString.length(); index++)
+	{
+		if (tomlString[index] == '\"')
+		{
+			break;
+		}
+		
+		if (tomlString[index] == '\\')
+		{
+			TomlError error = HandleEscape(key, tomlString, index);
+
+			if (error.errorType != TomlErrorType::NoError)
+			{
+				return std::unexpected(error);
+			}
+
+			continue;
+		}
+		
+		key.push_back(tomlString[index]);
+	}
+
+	for (; index < tomlString.length(); index++)
+	{
+		if (! std::isspace(tomlString[index]) && tomlString[index] != '=')
+		{
+			break;
+		}
+	}
+
+	if (index >= tomlString.length())
+	{
+		return std::unexpected(TomlError{TomlErrorType::InvalidFormat, index});
+	}
+
+	return key;
+}
+
+std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleStringLiteralKey(TomlValue& tomlValue, const std::string& tomlString, size_t& index)
 {
 	
 }
 
-std::string Marco::TomlReader::HandleStringLiteralKey(TomlValue& tomlValue, const std::string& tomlString, size_t& index)
+std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleBareKey(TomlValue& tomlValue, const std::string& tomlString, size_t& index)
 {
 	
 }
 
-std::string Marco::TomlReader::HandleBareKey(TomlValue& tomlValue, const std::string& tomlString, size_t& index)
+Marco::TomlError Marco::TomlReader::HandleEscape(std::string& value, const std::string& tomlString, size_t& index)
 {
-	
+	index++;
+
+	if (index >= tomlString.length())
+	{
+		return TomlError{TomlErrorType::InvalidFormat, index};
+	}
+
+	switch (tomlString[index])
+	{
+		case '\"': value.push_back('\"'); break;
+		case '\\': value.push_back('\\'); break;
+		case '/': value.push_back ('/');  break;
+		case 'b': value.push_back ('\b'); break;
+		case 'f': value.push_back ('\f'); break;
+		case 'n': value.push_back ('\n'); break;
+		case 'r': value.push_back ('\r'); break;
+		case 't': value.push_back ('\t'); break;
+		default:
+			return TomlError{TomlErrorType::InvalidFormat, index};
+	}
+
+	return TomlError{TomlErrorType::NoError, index};
 }
