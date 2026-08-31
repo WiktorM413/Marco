@@ -233,6 +233,14 @@ std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleStringLite
 		key.push_back(tomlString[index]);
 	}
 
+	for (; index < tomlString.length(); index++)
+	{
+		if (! std::isspace(tomlString[index]) && tomlString[index] != '=')
+		{
+			break;
+		}
+	}
+	
 	if (index >= tomlString.length())
 	{
 		return std::unexpected(TomlError{TomlErrorType::InvalidFormat, index});
@@ -258,6 +266,14 @@ std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleBareKey(co
 		}
 
 		key.push_back(tomlString[index]);
+	}
+
+	for (; index < tomlString.length(); index++)
+	{
+		if (! std::isspace(tomlString[index]) && tomlString[index] != '=')
+		{
+			break;
+		}
 	}
 
 	if (index >= tomlString.length())
