@@ -116,53 +116,13 @@ Marco::TomlError Marco::TomlReader::FormTomlFromString(Marco::TomlValue& rootTom
 				}
 				
 				std::string key = result.value();
-				error = FormTomlValue(rootTomlValue, currTomlValue[key], tomlString, index);
+				error = FormTomlValue(currTomlValue[key], tomlString, index);
 				break;
 			}
 		}
 	}
 
 	return error;
-}
-
-Marco::TomlError Marco::TomlReader::FormTomlValue(Marco::TomlValue& rootTomlValue, Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
-{
-	
-}
-
-Marco::TomlError Marco::TomlReader::HandleComment(const std::string& tomlString, size_t& index)
-{
-	index++;
-
-	for (; index < tomlString.length(); index++)
-	{
-		if (tomlString[index] == '\n')
-		{
-			break;
-		}
-	}
-
-	return TomlError{TomlErrorType::NoError, index};
-}
-
-Marco::TomlError Marco::TomlReader::HandleNumber(Marco::TomlValue& rootTomlValue, Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
-{
-	
-}
-
-Marco::TomlError Marco::TomlReader::HandleString(Marco::TomlValue& rootTomlValue, Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
-{
-	
-}
-
-Marco::TomlError Marco::TomlReader::HandleBool(Marco::TomlValue& rootTomlValue, Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
-{
-	
-}
-
-Marco::TomlError Marco::TomlReader::HandleNull(Marco::TomlValue& rootTomlValue, Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
-{
-	
 }
 
 Marco::TomlError Marco::TomlReader::HandleTables(Marco::TomlValue& rootTomlValue, Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
@@ -230,11 +190,6 @@ Marco::TomlError Marco::TomlReader::HandleTables(Marco::TomlValue& rootTomlValue
 	return TomlError{TomlErrorType::NoError, index};
 }
 
-Marco::TomlError Marco::TomlReader::HandleArray(Marco::TomlValue& rootTomlValue, Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
-{
-	
-}
-
 Marco::TomlError Marco::TomlReader::HandleInlineTables(Marco::TomlValue& rootTomlValue, Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
 {
 	
@@ -300,6 +255,37 @@ Marco::TomlError Marco::TomlReader::HandleArrayOfTables(Marco::TomlValue& rootTo
 	return TomlError{TomlErrorType::NoError, index};
 }
 
+Marco::TomlError Marco::TomlReader::FormTomlValue(Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
+{
+	
+}
+
+Marco::TomlError Marco::TomlReader::HandleNumber(Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
+{
+	
+}
+
+Marco::TomlError Marco::TomlReader::HandleString(Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
+{
+	
+}
+
+Marco::TomlError Marco::TomlReader::HandleBool(Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
+{
+	
+}
+
+Marco::TomlError Marco::TomlReader::HandleNull(Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
+{
+	
+}
+
+
+
+Marco::TomlError Marco::TomlReader::HandleArray(Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
+{
+	
+}
 
 std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleStringKey(const std::string& tomlString, size_t& index)
 {
@@ -410,6 +396,21 @@ std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleBareKey(co
 	}
 
 	return key;
+}
+
+Marco::TomlError Marco::TomlReader::HandleComment(const std::string& tomlString, size_t& index)
+{
+	index++;
+
+	for (; index < tomlString.length(); index++)
+	{
+		if (tomlString[index] == '\n')
+		{
+			break;
+		}
+	}
+
+	return TomlError{TomlErrorType::NoError, index};
 }
 
 Marco::TomlError Marco::TomlReader::HandleEscape(std::string& value, const std::string& tomlString, size_t& index)
