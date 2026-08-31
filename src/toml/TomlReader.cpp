@@ -52,70 +52,73 @@ bool Marco::TomlReader::IsValid()
 
 Marco::TomlError Marco::TomlReader::FormTomlFromString(Marco::TomlValue& rootTomlValue, Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
 {
-	for (; index < tomlString.length(); index++)
-	{
-		if (! std::isspace(tomlString[index]))
-		{
-			break;
-		}
-	}
-
-	if (index >= tomlString.length())
-	{
-		return TomlError{TomlErrorType::NoError, 0};
-	}
-
 	TomlError error{};
 
-	switch (tomlString[index])
+	while (index < tomlString.length() && error.errorType == TomlErrorType::NoError)
 	{
-		case '#':
-			error = HandleComment(rootTomlValue, currTomlValue, tomlString, index);
-			break;
-		case '[':
-			error = HandleTables(rootTomlValue, currTomlValue, tomlString, index);
-			break;
-		case '\"':
+		for (; index < tomlString.length(); index++)
 		{
-			auto result = HandleStringKey(tomlString, index);
-
-			if (! result.has_value())
+			if (! std::isspace(tomlString[index]))
 			{
-				error = result.error();
 				break;
 			}
-			
-			std::string key = result.value();
-			error = FormTomlValue(rootTomlValue, currTomlValue[key], tomlString, index);
-			break;
 		}
-		case '\'':
+	
+		if (index >= tomlString.length())
 		{
-			auto result = HandleStringKey(tomlString, index);
-
-			if (! result.has_value())
-			{
-				error = result.error();
-				break;
-			}
-			
-			std::string key = result.value();
-			error = FormTomlValue(rootTomlValue, currTomlValue[key], tomlString, index);
-			break;
+			return TomlError{TomlErrorType::NoError, 0};
 		}
-		default:
+	
+		switch (tomlString[index])
 		{
-			auto result = HandleStringKey(tomlString, index);
-
-			if (! result.has_value())
+			case '#':
+				error = HandleComment(rootTomlValue, currTomlValue, tomlString, index);
+				break;
+			case '[':
+				error = HandleTables(rootTomlValue, currTomlValue, tomlString, index);
+				break;
+			case '\"':
 			{
-				error = result.error();
+				auto result = HandleStringKey(tomlString, index);
+	
+				if (! result.has_value())
+				{
+					error = result.error();
+					break;
+				}
+				
+				std::string key = result.value();
+				error = FormTomlValue(rootTomlValue, currTomlValue[key], tomlString, index);
 				break;
 			}
-			
-			std::string key = result.value();
-			error = FormTomlValue(rootTomlValue, currTomlValue[key], tomlString, index);
-			break;
+			case '\'':
+			{
+				auto result = HandleStringKey(tomlString, index);
+	
+				if (! result.has_value())
+				{
+					error = result.error();
+					break;
+				}
+				
+				std::string key = result.value();
+				error = FormTomlValue(rootTomlValue, currTomlValue[key], tomlString, index);
+				break;
+			}
+			default:
+			{
+				auto result = HandleStringKey(tomlString, index);
+	
+				if (! result.has_value())
+				{
+					error = result.error();
+					break;
+				}
+				
+				std::string key = result.value();
+				error = FormTomlValue(rootTomlValue, currTomlValue[key], tomlString, index);
+				break;
+			}
 		}
 	}
 

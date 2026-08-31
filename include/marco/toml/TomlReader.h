@@ -20,8 +20,8 @@ namespace Marco
 		bool      IsValid();
 
 	private:
-		static TomlError FormTomlFromString (TomlValue& rootTomlValue, TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
-		static TomlError FormTomlValue      (TomlValue& rootTomlValue, TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
+		static TomlError FormTomlFromString (TomlValue& rootTomlValue, TomlValue& currTomlValue, const std::string& tomlString, size_t& index); // expects index to point to the first character of the line. Can be a whitespace
+		static TomlError FormTomlValue      (TomlValue& rootTomlValue, TomlValue& currTomlValue, const std::string& tomlString, size_t& index); // leaves index right after the first \n character it encounters
 		static TomlError HandleComment      (TomlValue& rootTomlValue, TomlValue& currTomlValue, const std::string& tomlString, size_t& index); // leaves index right after the first \n character it encounters
 		static TomlError HandleNumber       (TomlValue& rootTomlValue, TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
 		static TomlError HandleString       (TomlValue& rootTomlValue, TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
