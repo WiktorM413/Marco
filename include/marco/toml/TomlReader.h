@@ -2,6 +2,7 @@
 
 #include "marco/toml/Toml.h"
 #include "marco/toml/TomlError.h"
+#include <expected>
 #include <string>
 
 
@@ -29,9 +30,9 @@ namespace Marco
 		static TomlError HandleObject      (TomlValue& tomlValue, const std::string& tomlString, size_t& index);
 		static TomlError HandleArray       (TomlValue& tomlValue, const std::string& tomlString, size_t& index);
 		
-		static std::string HandleStringKey       (TomlValue& tomlValue, const std::string& tomlString, size_t& index); // leaves index at the closest character after '='
-		static std::string HandleStringLiteralKey(TomlValue& tomlValue, const std::string& tomlString, size_t& index); // leaves index at the closest character after '='
-		static std::string HandleBareKey         (TomlValue& tomlValue, const std::string& tomlString, size_t& index); // leaves index at the closest character after '='
+		static std::expected<std::string, TomlError> HandleStringKey       (TomlValue& tomlValue, const std::string& tomlString, size_t& index); // leaves index at the closest character after '='
+		static std::expected<std::string, TomlError> HandleStringLiteralKey(TomlValue& tomlValue, const std::string& tomlString, size_t& index); // leaves index at the closest character after '='
+		static std::expected<std::string, TomlError> HandleBareKey         (TomlValue& tomlValue, const std::string& tomlString, size_t& index); // leaves index at the closest character after '='
 		
 		TomlError m_error;
 		bool      m_valid;
