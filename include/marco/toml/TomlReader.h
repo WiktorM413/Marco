@@ -30,9 +30,9 @@ namespace Marco
 		static TomlError HandleObject      (TomlValue& tomlValue, const std::string& tomlString, size_t& index);
 		static TomlError HandleArray       (TomlValue& tomlValue, const std::string& tomlString, size_t& index);
 		
-		static std::expected<std::string, TomlError> HandleStringKey       (TomlValue& tomlValue, const std::string& tomlString, size_t& index); // leaves index at the closest character after '='
-		static std::expected<std::string, TomlError> HandleStringLiteralKey(TomlValue& tomlValue, const std::string& tomlString, size_t& index); // leaves index at the closest character after '='
-		static std::expected<std::string, TomlError> HandleBareKey         (TomlValue& tomlValue, const std::string& tomlString, size_t& index); // leaves index at the closest character after '='
+		static std::expected<std::string, TomlError> HandleStringKey       (const std::string& tomlString, size_t& index); // leaves index at the closest character after '='
+		static std::expected<std::string, TomlError> HandleStringLiteralKey(const std::string& tomlString, size_t& index); // leaves index at the closest character after '='
+		static std::expected<std::string, TomlError> HandleBareKey         (const std::string& tomlString, size_t& index); // leaves index at the closest character after '='
 
 		static TomlError HandleEscape(std::string& value, const std::string& tomlString, size_t& index);
 		

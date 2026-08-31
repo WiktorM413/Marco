@@ -77,7 +77,7 @@ Marco::TomlError Marco::TomlReader::FormTomlFromString(Marco::TomlValue& tomlVal
 			break;
 		case '\"':
 		{
-			auto result = HandleStringKey(tomlValue, tomlString, index);
+			auto result = HandleStringKey(tomlString, index);
 
 			if (! result.has_value())
 			{
@@ -91,7 +91,7 @@ Marco::TomlError Marco::TomlReader::FormTomlFromString(Marco::TomlValue& tomlVal
 		}
 		case '\'':
 		{
-			auto result = HandleStringKey(tomlValue, tomlString, index);
+			auto result = HandleStringKey(tomlString, index);
 
 			if (! result.has_value())
 			{
@@ -105,7 +105,7 @@ Marco::TomlError Marco::TomlReader::FormTomlFromString(Marco::TomlValue& tomlVal
 		}
 		default:
 		{
-			auto result = HandleStringKey(tomlValue, tomlString, index);
+			auto result = HandleStringKey(tomlString, index);
 
 			if (! result.has_value())
 			{
@@ -173,7 +173,7 @@ Marco::TomlError Marco::TomlReader::HandleArray(Marco::TomlValue& tomlValue, con
 }
 
 
-std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleStringKey(TomlValue& tomlValue, const std::string& tomlString, size_t& index)
+std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleStringKey(const std::string& tomlString, size_t& index)
 {
 	index++;
 
@@ -217,7 +217,7 @@ std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleStringKey(
 	return key;
 }
 
-std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleStringLiteralKey(TomlValue& tomlValue, const std::string& tomlString, size_t& index)
+std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleStringLiteralKey(const std::string& tomlString, size_t& index)
 {
 	index++;
 
@@ -241,7 +241,7 @@ std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleStringLite
 	return key;
 }
 
-std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleBareKey(TomlValue& tomlValue, const std::string& tomlString, size_t& index)
+std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleBareKey(const std::string& tomlString, size_t& index)
 {
 	std::string key{};
 
