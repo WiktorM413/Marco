@@ -192,9 +192,27 @@ Marco::TomlError Marco::TomlReader::HandleTables(Marco::TomlValue& tomlValue, co
 		key.push_back(tomlString[index]);
 	}
 
+	if (index >= tomlString.length())
+	{
+		return TomlError{TomlErrorType::InvalidFormat, index};
+	}
+
 	currValue = &(*currValue)[key];
 
-	
+	for (; index < tomlString.length(); index++)
+	{
+		if (tomlString[index] == '\n')
+		{
+			break;
+		}
+
+		if (! std::isspace(tomlString[index]))
+		{
+			return TomlError{TomlErrorType::InvalidFormat, index};
+		}
+	}
+
+	return TomlError{TomlErrorType::NoError, index};
 }
 
 Marco::TomlError Marco::TomlReader::HandleArray(Marco::TomlValue& tomlValue, const std::string& tomlString, size_t& index)
