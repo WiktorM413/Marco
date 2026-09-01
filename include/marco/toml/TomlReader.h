@@ -2,8 +2,10 @@
 
 #include "marco/toml/Toml.h"
 #include "marco/toml/TomlError.h"
+#include "marco/toml/TomlValue.h"
 #include <expected>
 #include <string>
+#include <type_traits>
 
 
 namespace Marco
@@ -20,11 +22,15 @@ namespace Marco
 		bool      IsValid();
 
 	private:
+		using KeyParser = std::expected<std::string, TomlError> (*) (const std::string&, size_t&);
+		
 		static TomlError FormTomlFromString (TomlValue& rootTomlValue, TomlValue& currTomlValue, const std::string& tomlString, size_t& index); // expects index to point to the first character of the line. Can be a whitespace
 		static TomlError HandleTables       (TomlValue& rootTomlValue, TomlValue& currTomlValue, const std::string& tomlString, size_t& index); // leaves index right after the first \n character it encounters
 		static TomlError HandleArrayOfTables(TomlValue& rootTomlValue, TomlValue& currTomlValue, const std::string& tomlString, size_t& index); // leaves index right after the first \n character it encounters
 	
-		static TomlError FormTomlValue      (TomlValue& currTomlValue, const std::string& tomlString, size_t& index); // leaves index right after the first \n character it encounters
+		static TomlError FormTomlValue   (TomlValue& currTomlValue, const std::string& tomlString, size_t& index); // leaves index right after the first \n character it encounters
+		static TomlError FormKeyValuePair(KeyParser keyParser, TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
+		
 		static TomlError HandleNumber       (TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
 		static TomlError HandleString       (TomlValue& currTomlValue, const std::string& tomlString, size_t& index, bool isMultiline);
 		static TomlError HandleStringLiteral(TomlValue& currTomlValue, const std::string& tomlString, size_t& index, bool isMultiline);

@@ -78,44 +78,17 @@ Marco::TomlError Marco::TomlReader::FormTomlFromString(Marco::TomlValue& rootTom
 				break;
 			case '\"':
 			{
-				auto result = HandleStringKey(tomlString, index);
-	
-				if (! result.has_value())
-				{
-					error = result.error();
-					break;
-				}
-				
-				std::string key = result.value();
-				error = FormTomlValue(currTomlValue[key], tomlString, index);
+				error = FormKeyValuePair(HandleStringKey, currTomlValue, tomlString, index);
 				break;
 			}
 			case '\'':
 			{
-				auto result = HandleStringLiteralKey(tomlString, index);
-	
-				if (! result.has_value())
-				{
-					error = result.error();
-					break;
-				}
-				
-				std::string key = result.value();
-				error = FormTomlValue(currTomlValue[key], tomlString, index);
+				error = FormKeyValuePair(HandleStringLiteralKey, currTomlValue, tomlString, index);
 				break;
 			}
 			default:
 			{
-				auto result = HandleBareKey(tomlString, index);
-	
-				if (! result.has_value())
-				{
-					error = result.error();
-					break;
-				}
-				
-				std::string key = result.value();
-				error = FormTomlValue(currTomlValue[key], tomlString, index);
+				error = FormKeyValuePair(HandleBareKey, currTomlValue, tomlString, index);
 				break;
 			}
 		}
@@ -351,6 +324,18 @@ Marco::TomlError Marco::TomlReader::FormTomlValue(Marco::TomlValue& currTomlValu
 	}
 
 	return error;
+}
+
+Marco::TomlError Marco::TomlReader::FormKeyValuePair(TomlReader::KeyParser keyParser, TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
+{
+	auto result = keyParser(tomlString, index);
+
+	if (! result.has_value())
+	{
+		return result.error();
+	}
+
+	return FormTomlValue(currTomlValue[result.value()], tomlString, index);
 }
 
 Marco::TomlError Marco::TomlReader::HandleNumber(Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
