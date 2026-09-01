@@ -150,7 +150,7 @@ std::expected<std::reference_wrapper<const Marco::TomlValue>, Marco::TomlError> 
 {
 	if (auto* arr = std::get_if<TomlArray>(&this->m_value))
 	{
-		if (index > arr->size())
+		if (index < arr->size())
 		{
 			return std::cref((*arr)[index]);
 		}
