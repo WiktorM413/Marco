@@ -341,6 +341,10 @@ Marco::TomlError Marco::TomlReader::FormTomlValue(Marco::TomlValue& currTomlValu
 	{
 		error = HandleNumber(currTomlValue, tomlString, index);
 	}
+	else if (c == 't' || c == 'f')
+	{
+		error = HandleBool(currTomlValue, tomlString, index);
+	}
 	else if (c == '[')
 	{
 		error = HandleArray(currTomlValue, tomlString, index);
@@ -372,7 +376,7 @@ Marco::TomlError Marco::TomlReader::HandleNumber(Marco::TomlValue& currTomlValue
 	{
 		char c = tomlString[index];
 
-		if (std::isspace(c) || c == '\n' || c == '#' || c == ']' || c == ',' || c == '}')
+		if (IsValueDelimiter(c))
 		{
 			break;
 		}
@@ -465,6 +469,8 @@ Marco::TomlError Marco::TomlReader::HandleString(Marco::TomlValue& currTomlValue
 				if (index + 2 < tomlString.length() && tomlString[index + 1] == '\"' && tomlString[index + 2] == '\"')
 				{
 					currTomlValue = value;
+					index += 3;
+					
 					return TomlError{TomlErrorType::NoError, index};
 				}
 			}
@@ -500,6 +506,8 @@ Marco::TomlError Marco::TomlReader::HandleString(Marco::TomlValue& currTomlValue
 			if (c == '\"')
 			{
 				currTomlValue = value;
+				index++;
+				
 				return TomlError{TomlErrorType::NoError, index};
 			}
 
@@ -525,7 +533,8 @@ Marco::TomlError Marco::TomlReader::HandleStringLiteral(Marco::TomlValue& currTo
 				if (index + 2 < tomlString.length() && tomlString[index + 1] == '\'' && tomlString[index + 2] == '\'')
 				{
 					currTomlValue = value;
-					index += 2;
+					index += 3;
+					
 					return TomlError{TomlErrorType::NoError, index};
 				}
 			}
@@ -549,6 +558,8 @@ Marco::TomlError Marco::TomlReader::HandleStringLiteral(Marco::TomlValue& currTo
 			if (c == '\'')
 			{
 				currTomlValue = value;
+				index++;
+				
 				return TomlError{TomlErrorType::NoError, index};
 			}
 
@@ -561,7 +572,38 @@ Marco::TomlError Marco::TomlReader::HandleStringLiteral(Marco::TomlValue& currTo
 
 Marco::TomlError Marco::TomlReader::HandleBool(Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
 {
-	
+	std::string key{};
+
+	for (; index < tomlString.length(); index++)
+	{
+		char c = tomlString[index];
+
+		if (IsValueDelimiter(c))
+		{
+			break;
+		}
+
+		key.push_back(c);
+	}
+
+	TomlError error{};
+
+	if (key == "true")
+	{
+		currTomlValue = true;
+		error = TomlError{TomlErrorType::NoError, index};
+	}
+	else if (key == "false")
+	{
+		currTomlValue = false;
+		error = TomlError{TomlErrorType::NoError, index};
+	}
+	else
+	{
+		error = TomlError{TomlErrorType::InvalidFormat, index};
+	}
+
+	return error;
 }
 
 Marco::TomlError Marco::TomlReader::HandleNull(Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
@@ -972,4 +1014,9 @@ std::expected<double, Marco::TomlError> Marco::TomlReader::ParseTomlFloat(std::s
 	}
 
 	return isNegative ? -value : value;
+}
+
+bool Marco::TomlReader::IsValueDelimiter(char c)
+{
+	return std::isspace(c) || c == '\n' || c == '#' || c == ']' || c == ',' || c == '}';
 }

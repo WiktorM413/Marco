@@ -43,6 +43,8 @@ namespace Marco
 
 		static std::expected<int,    TomlError> ParseTomlInt  (std::string_view s);
 		static std::expected<double, TomlError> ParseTomlFloat(std::string_view s);
+
+		static bool IsValueDelimiter(char c);
 		
 		TomlError m_error;
 		bool      m_valid;
