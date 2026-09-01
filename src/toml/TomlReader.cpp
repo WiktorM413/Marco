@@ -512,7 +512,51 @@ Marco::TomlError Marco::TomlReader::HandleString(Marco::TomlValue& currTomlValue
 
 Marco::TomlError Marco::TomlReader::HandleStringLiteral(Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index, bool isMultiline)
 {
-	
+	std::string value{};
+
+	if (isMultiline)
+	{
+		for (; index < tomlString.length(); index++)
+		{
+			char c = tomlString[index];
+
+			if (c == '\'')
+			{
+				if (index + 2 < tomlString.length() && tomlString[index + 1] == '\'' && tomlString[index + 2] == '\'')
+				{
+					currTomlValue = value;
+					index += 2;
+					return TomlError{TomlErrorType::NoError, index};
+				}
+			}
+
+			value.push_back(c);
+		}
+
+		return TomlError{TomlErrorType::InvalidFormat, index};
+	}
+	else
+	{
+		for (; index < tomlString.length(); index++)
+		{
+			char c = tomlString[index];
+
+			if (c == '\n')
+			{
+				return TomlError{TomlErrorType::InvalidFormat, index};
+			}
+
+			if (c == '\'')
+			{
+				currTomlValue = value;
+				return TomlError{TomlErrorType::NoError, index};
+			}
+
+			value.push_back(c);
+		}
+	}
+
+	return TomlError{TomlErrorType::InvalidFormat, index};
 }
 
 Marco::TomlError Marco::TomlReader::HandleBool(Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
