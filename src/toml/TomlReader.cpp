@@ -611,11 +611,68 @@ Marco::TomlError Marco::TomlReader::HandleNull(Marco::TomlValue& currTomlValue, 
 	
 }
 
-
-
 Marco::TomlError Marco::TomlReader::HandleArray(Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
 {
-	
+	index++;
+
+	bool isExpectingValue = true;
+
+	while (index < tomlString.length())
+	{
+		for (; index < tomlString.length(); index++)
+		{
+			if (! std::isspace(tomlString[index]))
+			{
+				break;
+			}
+		}
+
+		if (index >= tomlString.length())
+		{
+			return TomlError{TomlErrorType::InvalidFormat, index};
+		}
+
+		if (tomlString[index] == ']')
+		{
+			index++;
+
+			return TomlError{TomlErrorType::NoError, index};
+		}
+
+		if (! isExpectingValue)
+		{
+			return TomlError{TomlErrorType::InvalidFormat, index};
+		}
+		
+		TomlError error = FormTomlValue(currTomlValue.PushBack(nullptr), tomlString, index);
+
+		if (error.errorType != TomlErrorType::NoError)
+		{
+			return error;
+		}
+
+		for (; index < tomlString.length(); index++)
+		{
+			if (! std::isspace(tomlString[index]))
+			{
+				break;
+			}
+		}
+
+		if (tomlString[index] == ',')
+		{
+			index++;
+			
+			isExpectingValue = true;
+		}
+		else
+		{
+			isExpectingValue = false;
+		}
+
+	}
+
+	return TomlError{TomlErrorType::InvalidFormat, index};
 }
 
 std::expected<std::string, Marco::TomlError> Marco::TomlReader::HandleStringKey(const std::string& tomlString, size_t& index)
