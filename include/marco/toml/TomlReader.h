@@ -45,6 +45,7 @@ namespace Marco
 		static std::expected<double, TomlError> ParseTomlFloat(std::string_view s);
 
 		static bool IsValueDelimiter(char c);
+		static void MoveIndexUntilNotSpace(const std::string& tomlString, size_t& index);
 		
 		TomlError m_error;
 		bool      m_valid;

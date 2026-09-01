@@ -59,15 +59,7 @@ Marco::TomlError Marco::TomlReader::FormTomlFromString(Marco::TomlValue& rootTom
 
 	while (index < tomlString.length() && error.errorType == TomlErrorType::NoError)
 	{
-		for (; index < tomlString.length(); index++)
-		{
-			char c = tomlString[index];
-
-			if (! std::isspace(c))
-			{
-				break;
-			}
-		}
+		MoveIndexUntilNotSpace(tomlString, index);
 	
 		if (index >= tomlString.length())
 		{
@@ -619,13 +611,7 @@ Marco::TomlError Marco::TomlReader::HandleArray(Marco::TomlValue& currTomlValue,
 
 	while (index < tomlString.length())
 	{
-		for (; index < tomlString.length(); index++)
-		{
-			if (! std::isspace(tomlString[index]))
-			{
-				break;
-			}
-		}
+		MoveIndexUntilNotSpace(tomlString, index);
 
 		if (index >= tomlString.length())
 		{
@@ -651,12 +637,11 @@ Marco::TomlError Marco::TomlReader::HandleArray(Marco::TomlValue& currTomlValue,
 			return error;
 		}
 
-		for (; index < tomlString.length(); index++)
+		MoveIndexUntilNotSpace(tomlString, index);
+
+		if (index >= tomlString.length())
 		{
-			if (! std::isspace(tomlString[index]))
-			{
-				break;
-			}
+			return TomlError{TomlErrorType::InvalidFormat, index};
 		}
 
 		if (tomlString[index] == ',')
@@ -1076,4 +1061,15 @@ std::expected<double, Marco::TomlError> Marco::TomlReader::ParseTomlFloat(std::s
 bool Marco::TomlReader::IsValueDelimiter(char c)
 {
 	return std::isspace(c) || c == '\n' || c == '#' || c == ']' || c == ',' || c == '}';
+}
+
+void Marco::TomlReader::MoveIndexUntilNotSpace(const std::string& tomlString, size_t& index)
+{
+	for (; index < tomlString.length(); index++)
+	{
+		if (! std::isspace(tomlString[index]))
+		{
+			break;
+		}
+	}
 }
