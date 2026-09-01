@@ -70,6 +70,9 @@ Marco::TomlError Marco::TomlReader::FormTomlFromString(Marco::TomlValue& rootTom
 	
 		switch (c)
 		{
+			case '}':
+				error = TomlError{TomlErrorType::NoError, index};
+				break;
 			case '#':
 				error = HandleComment(tomlString, index);
 				break;
@@ -186,7 +189,14 @@ Marco::TomlError Marco::TomlReader::HandleTables(Marco::TomlValue& rootTomlValue
 
 Marco::TomlError Marco::TomlReader::HandleInlineTables(Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
 {
-	
+	index++;
+
+	TomlError error = FormTomlFromString(currTomlValue, currTomlValue, tomlString, index);
+
+	index++;
+	MoveIndexUntilNotSpace(tomlString, index);
+
+	return error;
 }
 
 Marco::TomlError Marco::TomlReader::HandleArrayOfTables(Marco::TomlValue& rootTomlValue, Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
@@ -581,11 +591,6 @@ Marco::TomlError Marco::TomlReader::HandleBool(Marco::TomlValue& currTomlValue, 
 	}
 
 	return error;
-}
-
-Marco::TomlError Marco::TomlReader::HandleNull(Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
-{
-	
 }
 
 Marco::TomlError Marco::TomlReader::HandleArray(Marco::TomlValue& currTomlValue, const std::string& tomlString, size_t& index)
