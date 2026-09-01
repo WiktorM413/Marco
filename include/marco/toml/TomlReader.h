@@ -34,7 +34,6 @@ namespace Marco
 		static TomlError HandleString       (TomlValue& currTomlValue, const std::string& tomlString, size_t& index, bool isMultiline);
 		static TomlError HandleStringLiteral(TomlValue& currTomlValue, const std::string& tomlString, size_t& index, bool isMultiline);
 		static TomlError HandleBool         (TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
-		static TomlError HandleNull         (TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
 		static TomlError HandleArray        (TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
 		static TomlError HandleInlineTables (TomlValue& currTomlValue, const std::string& tomlString, size_t& index);
 		

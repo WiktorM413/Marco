@@ -5,10 +5,10 @@ namespace Marco
 {
 	enum class TomlErrorType
 	{
+		NoError,
 		InvalidFormat,
 		WrongType,
-		InvalidNumberFormat,
-		NoError
+		InvalidNumberFormat
 	};
 
 	struct TomlError
