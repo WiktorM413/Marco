@@ -1,13 +1,12 @@
 #include "marco/toml/TomlValue.h"
-#include "marco/json/JsonValue.h"
 #include "marco/toml/TomlError.h"
 #include <cstddef>
-#include <exception>
 #include <expected>
 #include <functional>
 #include <variant>
 
 Marco::TomlValue::TomlValue():                       m_value(nullptr)                {}
+Marco::TomlValue::TomlValue(std::nullptr_t):         m_value(nullptr)                {}
 Marco::TomlValue::TomlValue(bool               b):   m_value(b)                      {}
 Marco::TomlValue::TomlValue(double             d):   m_value(d)                      {}
 Marco::TomlValue::TomlValue(int                i):   m_value(static_cast<double>(i)) {}

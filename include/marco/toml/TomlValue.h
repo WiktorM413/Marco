@@ -1,6 +1,7 @@
 #pragma once
 
 #include "marco/toml/TomlError.h"
+#include <cstddef>
 #include <expected>
 #include <functional>
 #include <map>
@@ -19,6 +20,7 @@ namespace Marco
 	{
 	public:
 		TomlValue();
+		TomlValue(std::nullptr_t);
 		TomlValue(bool b);
 		TomlValue(double d);
 		TomlValue(int i);
