@@ -170,6 +170,11 @@ Marco::TomlError Marco::TomlReader::HandleTables(Marco::TomlValue& rootTomlValue
 		return TomlError{TomlErrorType::InvalidFormat, index};
 	}
 
+	if (currTomlValue->AsObject().value().get().contains(key))
+	{
+		return TomlError{TomlErrorType::InvalidFormat, index};
+	}
+
 	currTomlValue = &(*currTomlValue)[key];
 
 	for (; index < tomlString.length(); index++)
