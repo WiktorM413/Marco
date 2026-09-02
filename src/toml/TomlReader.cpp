@@ -6,6 +6,7 @@
 #include <cmath>
 #include <expected>
 #include <string>
+#include <string_view>
 
 
 Marco::TomlReader::TomlReader(): m_error(TomlError{TomlErrorType::NoError, 0}), m_valid(false) {}
@@ -425,6 +426,11 @@ Marco::TomlError Marco::TomlReader::FormKeyValuePair(TomlReader::KeyParser keyPa
 	if (! result.has_value())
 	{
 		return result.error();
+	}
+
+	if (! (*currTomlValue)[result.value()].IsEmpty())
+	{
+		return TomlError{TomlErrorType::InvalidFormat, index};
 	}
 
 	return FormTomlValue(&(*currTomlValue)[result.value()], tomlString, index);
