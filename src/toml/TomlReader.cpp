@@ -102,7 +102,7 @@ Marco::TomlError Marco::TomlReader::FormTomlFromString(Marco::TomlValue& rootTom
 	return error;
 }
 
-Marco::TomlError Marco::TomlReader::HandleTables(Marco::TomlValue& rootTomlValue, Marco::TomlValue* currTomlValue, const std::string& tomlString, size_t& index)
+Marco::TomlError Marco::TomlReader::HandleTables(Marco::TomlValue& rootTomlValue, Marco::TomlValue*& currTomlValue, const std::string& tomlString, size_t& index)
 {
 	index++;
 	
@@ -150,9 +150,8 @@ Marco::TomlError Marco::TomlReader::HandleTables(Marco::TomlValue& rootTomlValue
 			currTomlValue = &(*currTomlValue)[key];
 			key = "";
 			
-			index++;
 
-			if (index >= tomlString.length() || tomlString[index] == ']')
+			if (index + 1 >= tomlString.length() || tomlString[index + 1] == ']')
 			{
 				return TomlError{TomlErrorType::InvalidFormat, index};
 			}
@@ -245,7 +244,7 @@ Marco::TomlError Marco::TomlReader::HandleInlineTables(Marco::TomlValue* currTom
 	return TomlError{TomlErrorType::InvalidFormat, index};
 }
 
-Marco::TomlError Marco::TomlReader::HandleArrayOfTables(Marco::TomlValue& rootTomlValue, Marco::TomlValue* currTomlValue, const std::string& tomlString, size_t& index)
+Marco::TomlError Marco::TomlReader::HandleArrayOfTables(Marco::TomlValue& rootTomlValue, Marco::TomlValue*& currTomlValue, const std::string& tomlString, size_t& index)
 {
 	index++;
 
