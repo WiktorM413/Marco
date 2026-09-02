@@ -197,55 +197,78 @@ Marco::TomlError Marco::TomlReader::HandleTables(Marco::TomlValue& rootTomlValue
 
 Marco::TomlError Marco::TomlReader::HandleInlineTables(Marco::TomlValue* currTomlValue, const std::string& tomlString, size_t& index)
 {
+	enum class State
+	{
+		ExpectKey,
+		ExpectCommaOrEnd
+	};
+	
 	index++;
 	MoveIndexUntilNotSpace(tomlString, index);
-
-	bool isExpectingPair = true;
-
+	
+	State state = State::ExpectKey;
+	
 	while (index < tomlString.length())
 	{
-		if (tomlString[index] == '}')
+		switch (state)
 		{
-			index++;
-
-			return TomlError{TomlErrorType::NoError, index};
-		}
-
-		if (!isExpectingPair)
-		{
-			return TomlError{TomlErrorType::InvalidFormat, index};
-		}
-
-		char c = tomlString[index];
-		TomlError error{};
-
-		switch (c)
-		{
-			case '\"': error = FormKeyValuePair(HandleStringKey,        currTomlValue, tomlString, index); break;
-			case '\'': error = FormKeyValuePair(HandleStringLiteralKey, currTomlValue, tomlString, index); break;
-			default:   error = FormKeyValuePair(HandleBareKey,          currTomlValue, tomlString, index); break;
-		}
-
-		if (error.errorType != TomlErrorType::NoError)
-		{
-			return error;
-		}
-
-		MoveIndexUntilNotSpace(tomlString, index);
-
-		if (index < tomlString.length() && tomlString[index] == ',')
-		{
-			index++;
-			MoveIndexUntilNotSpace(tomlString, index);
-
-			isExpectingPair = true;
-		}
-		else
-		{
-			isExpectingPair = false;
+			case State::ExpectKey:
+			{
+				if (tomlString[index] == '}')
+				{
+					index++;
+					return TomlError{TomlErrorType::NoError, index};
+				}
+				
+				char c = tomlString[index];
+				TomlError error{};
+				
+				switch (c)
+				{
+					case '\"': error = FormKeyValuePair(HandleStringKey,        currTomlValue, tomlString, index); break;
+					case '\'': error = FormKeyValuePair(HandleStringLiteralKey, currTomlValue, tomlString, index); break;
+					default:   error = FormKeyValuePair(HandleBareKey,          currTomlValue, tomlString, index); break;
+				}
+				
+				if (error.errorType != TomlErrorType::NoError)
+				{
+					return error;
+				}
+				
+				MoveIndexUntilNotSpace(tomlString, index);
+				state = State::ExpectCommaOrEnd;
+				break;
+			}
+			
+			case State::ExpectCommaOrEnd:
+			{
+				if (index >= tomlString.length())
+				{
+					return TomlError{TomlErrorType::InvalidFormat, index};
+				}
+				
+				if (tomlString[index] == '}')
+				{
+					index++;
+					return TomlError{TomlErrorType::NoError, index};
+				}
+				
+				if (tomlString[index] == ',')
+				{
+					index++;
+					MoveIndexUntilNotSpace(tomlString, index);
+					
+					state = State::ExpectKey;
+				}
+				else
+				{
+					return TomlError{TomlErrorType::InvalidFormat, index};
+				}
+				break;
+			}
 		}
 	}
-
+	
 	return TomlError{TomlErrorType::InvalidFormat, index};
 }
 
