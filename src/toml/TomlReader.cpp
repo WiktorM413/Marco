@@ -307,6 +307,13 @@ Marco::TomlError Marco::TomlReader::HandleArrayOfTables(Marco::TomlValue& rootTo
 
 	currTomlValue = &(*currTomlValue)[key];
 
+	if (index >= tomlString.length() || tomlString[index] != ']')
+	{
+		return TomlError{TomlErrorType::InvalidFormat, index};
+	}
+
+	index++;
+
 	for (; index < tomlString.length(); index++)
 	{
 		char c = tomlString[index];
