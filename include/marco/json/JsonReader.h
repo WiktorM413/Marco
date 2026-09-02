@@ -1,9 +1,9 @@
 #pragma once
 
 #include <string>
-#include "marco/Json.h"
-#include "marco/JsonError.h"
-#include "marco/JsonValue.h"
+#include "marco/json/Json.h"
+#include "marco/json/JsonError.h"
+#include "marco/json/JsonValue.h"
 
 namespace Marco
 {

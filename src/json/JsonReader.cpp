@@ -1,8 +1,8 @@
-#include "marco/JsonReader.h"
-#include "marco/FileUtils.h"
-#include "marco/Json.h"
-#include "marco/JsonError.h"
-#include "marco/JsonValue.h"
+#include "marco/json/JsonReader.h"
+#include "marco/utils/FileUtils.h"
+#include "marco/json/Json.h"
+#include "marco/json/JsonError.h"
+#include "marco/json/JsonValue.h"
 #include <cctype>
 #include <stdexcept>
 
@@ -20,8 +20,6 @@ Marco::Json Marco::JsonReader::Parse(const std::string& jsonString)
 	{
 		this->m_error = JsonError{JsonErrorType::InvalidFormat, 0};
 		this->m_valid = false;
-
-		JsonValue emptyValue{};
 		
 		return Json{};
 	}

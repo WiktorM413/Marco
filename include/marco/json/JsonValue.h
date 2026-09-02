@@ -6,8 +6,8 @@
 #include <string>
 #include <variant>
 #include <vector>
-#include "marco/JsonError.h"
-#include "marco/JsonObject.h"
+#include "marco/json/JsonError.h"
+#include "marco/json/JsonObject.h"
 
 namespace Marco
 {

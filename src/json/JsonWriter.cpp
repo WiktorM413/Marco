@@ -1,7 +1,7 @@
-#include "marco/JsonWriter.h"
-#include "marco/FileUtils.h"
-#include "marco/Json.h"
-#include "marco/JsonValue.h"
+#include "marco/json/JsonWriter.h"
+#include "marco/utils/FileUtils.h"
+#include "marco/json/Json.h"
+#include "marco/json/JsonValue.h"
 #include <cmath>
 #include <format>
 #include <stdexcept>

@@ -1,6 +1,6 @@
-#include "marco/JsonError.h"
-#include "marco/JsonReader.h"
-#include "marco/JsonValue.h"
+#include "marco/json/JsonError.h"
+#include "marco/json/JsonReader.h"
+#include "marco/json/JsonValue.h"
 #include <gtest/gtest.h>
 
 TEST(JsonReaderTest, ParseEmptyObject)
