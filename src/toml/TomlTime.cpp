@@ -1,5 +1,7 @@
 #include "marco/toml/TomlTime.h"
 #include "marco/toml/TomlError.h"
+#include "marco/utils/IntUtils.h"
+#include <cmath>
 #include <expected>
 #include <format>
 #include <stdexcept>
@@ -20,7 +22,7 @@ Marco::TomlError Marco::TomlTime::FromString(const std::string& dateString)
 	{
 		return TomlError{TomlErrorType::InvalidDateFormat, 0};
 	}
-	
+
 	std::size_t i = 0;
 
 	std::string s{};
@@ -37,11 +39,11 @@ Marco::TomlError Marco::TomlTime::FromString(const std::string& dateString)
 	{
 		return result.error();
 	}
-	
+
 	this->hour = result.value();
 
 	s = "";
-	
+
 	for (; i < 5; i++) // minute digits are 3 and 4
 	{
 		s.push_back(dateString[i]);
@@ -57,7 +59,7 @@ Marco::TomlError Marco::TomlTime::FromString(const std::string& dateString)
 	{
 		return TomlError{TomlErrorType::InvalidDateFormat, 0};
 	}
-	
+
 	i++; // skip the ':'
 
 	result = StringToInt(s);
@@ -65,7 +67,7 @@ Marco::TomlError Marco::TomlTime::FromString(const std::string& dateString)
 	{
 		return result.error();
 	}
-	
+
 	this->minute = result.value();
 
 	s = "";
@@ -80,7 +82,7 @@ Marco::TomlError Marco::TomlTime::FromString(const std::string& dateString)
 	{
 		return result.error();
 	}
-	
+
 	this->second = result.value();
 
 	if (s.length() <= 9) // Would be something like HH:MM:SS.
@@ -107,7 +109,7 @@ Marco::TomlError Marco::TomlTime::FromString(const std::string& dateString)
 	{
 		return result.error();
 	}
-	
+
 	this->millisecond = result.value();
 
 	return TomlError{TomlErrorType::NoError, 0};
@@ -115,13 +117,53 @@ Marco::TomlError Marco::TomlTime::FromString(const std::string& dateString)
 
 std::string Marco::TomlTime::AsString()
 {
-	return std::format("");
+	std::string dateString{};
+
+	if (IsSingleDigit(this->hour))
+	{
+		dateString.push_back('0');
+	}
+
+	dateString += std::to_string(this->hour);
+	dateString.push_back(':');
+
+	if (IsSingleDigit(this->minute))
+	{
+		dateString.push_back('0');
+	}
+
+	dateString += std::to_string(this->minute);
+
+	if (this->second > 0)
+	{
+		dateString.push_back(':');
+
+		if (IsSingleDigit(this->second))
+		{
+			dateString.push_back('0');
+		}
+
+		dateString += std::to_string(this->second);
+	}
+
+	if (this->millisecond > 0)
+	{
+		if (this->second == 0)
+		{
+			dateString += ":00";
+		}
+
+		dateString.push_back('.');
+		dateString += std::to_string(this->millisecond);
+	}
+
+	return dateString;
 }
 
 std::expected<int, Marco::TomlError> StringToInt(const std::string& s)
 {
 	int n{};
-	
+
 	try
 	{
 		n = std::stoi(s);
