@@ -1,9 +1,7 @@
 #include "marco/toml/TomlTime.h"
 #include "marco/toml/TomlError.h"
 #include "marco/utils/IntUtils.h"
-#include <cmath>
 #include <expected>
-#include <format>
 #include <stdexcept>
 #include <string>
 
@@ -85,7 +83,7 @@ Marco::TomlError Marco::TomlTime::FromString(const std::string& dateString)
 
 	this->second = result.value();
 
-	if (s.length() <= 9) // Would be something like HH:MM:SS.
+	if (! (dateString.length() > 8 && dateString[8] == '.')) // Would be something like HH:MM:SS.
 	{
 		return TomlError{TomlErrorType::InvalidDateFormat, 0};
 	}
@@ -168,11 +166,11 @@ std::expected<int, Marco::TomlError> StringToInt(const std::string& s)
 	{
 		n = std::stoi(s);
 	}
-	catch (std::invalid_argument e)
+	catch (const std::invalid_argument&)
 	{
 		return std::unexpected(Marco::TomlError{Marco::TomlErrorType::InvalidDateFormat, 0});
 	}
-	catch (std::out_of_range e)
+	catch (const std::out_of_range&)
 	{
 		return std::unexpected(Marco::TomlError{Marco::TomlErrorType::InvalidDateFormat, 0});
 	}
