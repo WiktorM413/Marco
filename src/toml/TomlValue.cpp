@@ -1,5 +1,7 @@
 #include "marco/toml/TomlValue.h"
+#include "marco/toml/TomlDate.h"
 #include "marco/toml/TomlError.h"
+#include "marco/toml/TomlTime.h"
 #include <cstddef>
 #include <expected>
 #include <functional>
@@ -45,6 +47,16 @@ bool Marco::TomlValue::IsArray() const
 	return std::holds_alternative<TomlArray>(this->m_value);
 }
 
+bool Marco::TomlValue::isDate() const
+{
+	return std::holds_alternative<TomlDate>(this->m_value);
+}
+
+bool Marco::TomlValue::isTime() const
+{
+	return std::holds_alternative<TomlTime>(this->m_value);
+}
+
 std::expected<bool, Marco::TomlError> Marco::TomlValue::AsBool() const
 {
 	if (auto* p = std::get_if<bool>(&this->m_value))
@@ -88,6 +100,26 @@ std::expected<std::reference_wrapper<const Marco::TomlObject>, Marco::TomlError>
 std::expected<std::reference_wrapper<const Marco::TomlArray>, Marco::TomlError> Marco::TomlValue::AsArray() const
 {
 	if (auto* p = std::get_if<TomlArray>(&this->m_value))
+	{
+		return std::cref(*p);
+	}
+
+	return std::unexpected(TomlError{TomlErrorType::WrongType, 0});
+}
+
+std::expected<std::reference_wrapper<const Marco::TomlDate>, Marco::TomlError> Marco::TomlValue::AsDate() const
+{
+	if (auto* p = std::get_if<TomlDate>(&this->m_value))
+	{
+		return std::cref(*p);
+	}
+
+	return std::unexpected(TomlError{TomlErrorType::WrongType, 0});
+}
+
+std::expected<std::reference_wrapper<const Marco::TomlTime>, Marco::TomlError> Marco::TomlValue::AsTime() const
+{
+	if (auto* p = std::get_if<TomlTime>(&this->m_value))
 	{
 		return std::cref(*p);
 	}
