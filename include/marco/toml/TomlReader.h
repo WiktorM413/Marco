@@ -22,7 +22,7 @@ namespace Marco
 
 	private:
 		using KeyParser     = std::expected<std::string, TomlError> (*) (const std::string&, size_t&); // applies for HandleStringKey, HandleStringLiteralKey, HandleBareKey
-		using NumberHandler = TomlError (*) (TomlValue*, const std::string&, size_t&); // applies for HandleNumber, HandleDate, HandleTime
+		using NumericHandler = TomlError (*) (TomlValue*, const std::string&, size_t&); // applies for HandleNumber, HandleDate, HandleTime
 		
 		static TomlError FormTomlFromString (TomlValue& rootTomlValue, TomlValue* currTomlValue, const std::string& tomlString, size_t& index); // expects index to point to the first character of the line. Can be a whitespace
 		static TomlError HandleTables       (TomlValue& rootTomlValue, TomlValue*& currTomlValue, const std::string& tomlString, size_t& index); // leaves index right after the first \n character it encounters
@@ -50,7 +50,7 @@ namespace Marco
 		static std::expected<int,    TomlError> ParseTomlInt  (std::string_view s);
 		static std::expected<double, TomlError> ParseTomlFloat(std::string_view s);
 
-		static NumberHandler EvaluateNumericTomlValue(const std::string& tomlString, size_t& index);
+		static NumericHandler EvaluateNumericTomlValue(const std::string& tomlString, size_t& index);
 
 		static bool IsValueDelimiter(char c);
 		static void MoveIndexUntilNotSpace(const std::string& tomlString, size_t& index);
