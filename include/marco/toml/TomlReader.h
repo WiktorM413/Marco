@@ -31,14 +31,14 @@ namespace Marco
 		static TomlError FormTomlValue   (TomlValue* currTomlValue, const std::string& tomlString, size_t& index); // leaves index right after the first \n character it encounters
 		static TomlError FormKeyValuePair(KeyParser keyParser, TomlValue* currTomlValue, const std::string& tomlString, size_t& index);
 		
-		static TomlError HandleNumber       (TomlValue* currTomlValue, const std::string& tomlString, size_t& index);
-		static TomlError HandleString       (TomlValue* currTomlValue, const std::string& tomlString, size_t& index, bool isMultiline);
-		static TomlError HandleStringLiteral(TomlValue* currTomlValue, const std::string& tomlString, size_t& index, bool isMultiline);
-		static TomlError HandleBool         (TomlValue* currTomlValue, const std::string& tomlString, size_t& index);
-		static TomlError HandleArray        (TomlValue* currTomlValue, const std::string& tomlString, size_t& index);
-		static TomlError HandleInlineTables (TomlValue* currTomlValue, const std::string& tomlString, size_t& index);
-		static TomlError HandleDate         (TomlValue* currTomlValue, const std::string& tomlString, size_t& index);
-		static TomlError HandleTime         (TomlValue* currTomlValue, const std::string& tomlString, size_t& index);
+		static TomlError HandleNumber       (TomlValue* currTomlValue, const std::string& tomlString, size_t& index); // leaves index at the first delimiter character after the number (not consumed)
+		static TomlError HandleString       (TomlValue* currTomlValue, const std::string& tomlString, size_t& index, bool isMultiline); // leaves index right after the closing '"' (or closing '"""' if multiline)
+		static TomlError HandleStringLiteral(TomlValue* currTomlValue, const std::string& tomlString, size_t& index, bool isMultiline); // leaves index right after the closing '\'' (or closing '\'\'\'' if multiline)
+		static TomlError HandleBool         (TomlValue* currTomlValue, const std::string& tomlString, size_t& index); // leaves index at the first delimiter character after true/false (not consumed)
+		static TomlError HandleArray        (TomlValue* currTomlValue, const std::string& tomlString, size_t& index); // leaves index right after the closing ']'
+		static TomlError HandleInlineTables (TomlValue* currTomlValue, const std::string& tomlString, size_t& index); // leaves index right after the closing '}'
+		static TomlError HandleDate         (TomlValue* currTomlValue, const std::string& tomlString, size_t& index); // leaves index at the whitespace character that ends the date (not consumed)
+		static TomlError HandleTime         (TomlValue* currTomlValue, const std::string& tomlString, size_t& index); // leaves index at the whitespace character that ends the time (not consumed)
 		
 		static std::expected<std::string, TomlError> HandleStringKey       (const std::string& tomlString, size_t& index); // leaves index at the closest character that either isnt a '=' or a whitespace
 		static std::expected<std::string, TomlError> HandleStringLiteralKey(const std::string& tomlString, size_t& index); // leaves index at the closest character that either isnt a '=' or a whitespace
