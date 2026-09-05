@@ -39,8 +39,8 @@ namespace Marco
 		bool IsString() const;
 		bool IsObject() const;
 		bool IsArray()  const;
-		bool isDate()   const;
-		bool isTime()   const;
+		bool IsDate()   const;
+		bool IsTime()   const;
 		
 		std::expected<bool,                                      TomlError> AsBool()   const;
 		std::expected<double,                                    TomlError> AsNumber() const;

@@ -49,12 +49,12 @@ bool Marco::TomlValue::IsArray() const
 	return std::holds_alternative<TomlArray>(this->m_value);
 }
 
-bool Marco::TomlValue::isDate() const
+bool Marco::TomlValue::IsDate() const
 {
 	return std::holds_alternative<TomlDate>(this->m_value);
 }
 
-bool Marco::TomlValue::isTime() const
+bool Marco::TomlValue::IsTime() const
 {
 	return std::holds_alternative<TomlTime>(this->m_value);
 }
