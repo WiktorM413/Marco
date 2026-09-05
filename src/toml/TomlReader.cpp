@@ -273,6 +273,32 @@ Marco::TomlError Marco::TomlReader::HandleInlineTables(Marco::TomlValue* currTom
 	return TomlError{TomlErrorType::InvalidFormat, index};
 }
 
+Marco::TomlError Marco::TomlReader::HandleDate(Marco::TomlValue* currTomlValue, const std::string& tomlString, size_t& index)
+{
+	std::string value{};
+
+	for (; index < tomlString.length(); index++)
+	{
+		if (std::isspace(tomlString[index]))
+		{
+			break;
+		}
+
+		value.push_back(tomlString[index]);
+	}
+
+	*currTomlValue = TomlDate{};
+	
+	TomlError error = currTomlValue->AsDate().value().FromString(value);
+
+	return error;
+}
+
+Marco::TomlError Marco::TomlReader::HandleTime(Marco::TomlValue* currTomlValue, const std::string& tomlString, size_t& index)
+{
+	
+}
+
 Marco::TomlError Marco::TomlReader::HandleArrayOfTables(Marco::TomlValue& rootTomlValue, Marco::TomlValue*& currTomlValue, const std::string& tomlString, size_t& index)
 {
 	index++;
@@ -397,7 +423,9 @@ Marco::TomlError Marco::TomlReader::FormTomlValue(Marco::TomlValue* currTomlValu
 	}
 	else if ((c >= '0' && c <= '9') || c == '-' || c == '+')
 	{
-		error = HandleNumber(currTomlValue, tomlString, index);
+		NumericHandler handler = EvaluateNumericTomlValue(tomlString, index);
+
+		error = handler(currTomlValue, tomlString, index);
 	}
 	else if (c == 't' || c == 'f')
 	{
@@ -1142,6 +1170,27 @@ std::expected<double, Marco::TomlError> Marco::TomlReader::ParseTomlFloat(std::s
 	}
 
 	return isNegative ? -value : value;
+}
+
+Marco::TomlReader::NumericHandler Marco::TomlReader::EvaluateNumericTomlValue(const std::string& tomlString, size_t& index)
+{
+	if (tomlString[index] == '-' || tomlString[index] == '+')
+	{
+		return HandleNumber;
+	}
+
+	if (index + 4 < tomlString.length() && tomlString[index + 4] == '-') // YYYY-MM-DD
+	{
+		return HandleDate;
+	}
+	else if (index + 2 < tomlString.length() && tomlString[index + 2] == ':') // HH:MM:SS
+	{
+		return HandleTime;
+	}
+	else
+	{
+		return HandleNumber;
+	}
 }
 
 bool Marco::TomlReader::IsValueDelimiter(char c)
