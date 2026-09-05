@@ -47,6 +47,14 @@ Marco::TomlError Marco::TomlTime::FromString(const std::string& dateString)
 		s.push_back(dateString[i]);
 	}
 
+	result = StringToInt(s);
+	if (! result.has_value())
+	{
+		return result.error();
+	}
+
+	this->minute = result.value();
+
 
 	if (dateString.length() < 8) // Doesnt have the seconds in HH:MM:SS
 	{
@@ -59,14 +67,6 @@ Marco::TomlError Marco::TomlTime::FromString(const std::string& dateString)
 	}
 
 	i++; // skip the ':'
-
-	result = StringToInt(s);
-	if (! result.has_value())
-	{
-		return result.error();
-	}
-
-	this->minute = result.value();
 
 	s = "";
 
@@ -82,6 +82,11 @@ Marco::TomlError Marco::TomlTime::FromString(const std::string& dateString)
 	}
 
 	this->second = result.value();
+
+	if (dateString.length() == 8)
+	{
+		return TomlError{TomlErrorType::NoError, i};
+	}
 
 	if (! (dateString.length() > 8 && dateString[8] == '.')) // Would be something like HH:MM:SS.
 	{
