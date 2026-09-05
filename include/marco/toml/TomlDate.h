@@ -14,6 +14,8 @@ namespace Marco
 
 		TomlError FromString(const std::string& dateString);
 
+		std::string AsString();
+
 		unsigned int year;
 		unsigned int month;
 		unsigned int day;

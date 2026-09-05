@@ -25,7 +25,7 @@ namespace Marco
 		TomlValue(std::nullptr_t);
 		TomlValue(bool b);
 		TomlValue(double d);
-		TomlValue(int i);
+		TomlValue(long l);
 		TomlValue(const std::string& s);
 		TomlValue(const char* c);
 		TomlValue(TomlArray arr);

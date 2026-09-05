@@ -11,7 +11,7 @@ Marco::TomlValue::TomlValue():                        m_value(nullptr)          
 Marco::TomlValue::TomlValue(std::nullptr_t):          m_value(nullptr)                {}
 Marco::TomlValue::TomlValue(bool               b):    m_value(b)                      {}
 Marco::TomlValue::TomlValue(double             d):    m_value(d)                      {}
-Marco::TomlValue::TomlValue(int                i):    m_value(static_cast<double>(i)) {}
+Marco::TomlValue::TomlValue(long               l):    m_value(static_cast<double>(l)) {}
 Marco::TomlValue::TomlValue(const std::string& s):    m_value(s)                      {}
 Marco::TomlValue::TomlValue(const char*        c):    m_value(c)                      {}
 Marco::TomlValue::TomlValue(TomlArray          arr):  m_value(std::move(arr))         {}

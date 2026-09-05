@@ -2,6 +2,7 @@
 #include "marco/toml/TomlError.h"
 #include <expected>
 #include <stdexcept>
+#include <string>
 
 
 static std::expected<int, Marco::TomlError> StringToInt(const std::string& s);
@@ -128,6 +129,60 @@ Marco::TomlError Marco::TomlDate::FromString(const std::string& dateString)
 	error = this->offsetTimeEnd.FromString(s);
 
 	return error;
+}
+
+std::string Marco::TomlDate::AsString()
+{
+	std::string dateString{};
+
+	dateString += std::to_string(this->year);
+
+	dateString.push_back('-');
+
+	if (this->month < 10)
+	{
+		dateString.push_back('0');
+	}
+		
+	dateString += std::to_string(this->month);
+
+	dateString.push_back('-');
+
+	if (this->day < 10)
+	{
+		dateString.push_back('0');
+	}
+
+	dateString += std::to_string(this->day);
+
+	std::string timeStartString = this->offsetTimeStart.AsString();
+	std::string timeEndString   = this->offsetTimeEnd.AsString();
+
+	if (timeStartString == timeEndString) // there is only one date offset or none
+	{
+		if (timeStartString == "00:00")
+		{
+			return dateString;
+		}
+
+		dateString.push_back('T');
+
+		dateString += timeStartString;
+
+		dateString.push_back('Z');
+		
+		return dateString;
+	}
+
+	dateString.push_back('T');
+
+	dateString += timeStartString;
+
+	dateString.push_back(':');
+
+	dateString += timeEndString;
+	
+	return dateString;
 }
 
 std::expected<int, Marco::TomlError> StringToInt(const std::string& s)
