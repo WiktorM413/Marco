@@ -47,7 +47,7 @@ namespace Marco
 		static TomlError HandleComment(const std::string& tomlString, size_t& index); // leaves index right after the first \n character it encounters
 		static TomlError HandleEscape(std::string& value, const std::string& tomlString, size_t& index); // leaves index right after the 'X' as in \X
 
-		static std::expected<int,    TomlError> ParseTomlInt  (std::string_view s);
+		static std::expected<long,    TomlError> ParseTomlInt  (std::string_view s);
 		static std::expected<double, TomlError> ParseTomlFloat(std::string_view s);
 
 		static NumericHandler EvaluateNumericTomlValue(const std::string& tomlString, size_t& index);

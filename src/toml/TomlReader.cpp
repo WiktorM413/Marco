@@ -973,7 +973,7 @@ Marco::TomlError Marco::TomlReader::HandleEscape(std::string& value, const std::
 	return TomlError{TomlErrorType::NoError, index};
 }
 
-std::expected<int, Marco::TomlError> Marco::TomlReader::ParseTomlInt(std::string_view s)
+std::expected<long, Marco::TomlError> Marco::TomlReader::ParseTomlInt(std::string_view s)
 {
 	bool isNegative = false;
 
@@ -1000,7 +1000,7 @@ std::expected<int, Marco::TomlError> Marco::TomlReader::ParseTomlInt(std::string
 		return std::unexpected(TomlError{TomlErrorType::InvalidFormat, 0});
 	}
 
-	int  value        = 0;
+	long value        = 0;
 	bool prevWasDigit = false;
 
 	for (std::size_t i = 0; i < s.length(); i++)
