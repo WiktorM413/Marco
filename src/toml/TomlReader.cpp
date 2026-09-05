@@ -296,7 +296,23 @@ Marco::TomlError Marco::TomlReader::HandleDate(Marco::TomlValue* currTomlValue, 
 
 Marco::TomlError Marco::TomlReader::HandleTime(Marco::TomlValue* currTomlValue, const std::string& tomlString, size_t& index)
 {
+	std::string value{};
+
+	for (; index < tomlString.length(); index++)
+	{
+		if (std::isspace(tomlString[index]))
+		{
+			break;
+		}
+
+		value.push_back(tomlString[index]);
+	}
+
+	*currTomlValue = TomlTime{};
 	
+	TomlError error = currTomlValue->AsTime().value().FromString(value);
+
+	return error;
 }
 
 Marco::TomlError Marco::TomlReader::HandleArrayOfTables(Marco::TomlValue& rootTomlValue, Marco::TomlValue*& currTomlValue, const std::string& tomlString, size_t& index)
