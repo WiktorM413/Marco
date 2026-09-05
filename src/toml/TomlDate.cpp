@@ -204,3 +204,25 @@ std::expected<int, Marco::TomlError> StringToInt(const std::string& s)
 
 	return n;
 }
+
+bool Marco::TomlDate::IsWIthinBoundry()
+{
+	if (this->month > 12 || this->month < 1)
+	{
+		return false;
+	}
+	else if (this->day > 31 || this->day < 1)
+	{
+		return false;
+	}
+	else if (! this->offsetTimeStart.IsWIthinBoundry())
+	{
+		return false;
+	}
+	else if (! this->offsetTimeEnd.IsWIthinBoundry())
+	{
+		return false;
+	}
+
+	return true;
+}

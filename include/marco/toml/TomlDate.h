@@ -15,6 +15,8 @@ namespace Marco
 		TomlError FromString(const std::string& dateString);
 
 		std::string AsString();
+		
+		bool IsWIthinBoundry();
 
 		unsigned int year;
 		unsigned int month;

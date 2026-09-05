@@ -182,3 +182,25 @@ std::expected<int, Marco::TomlError> StringToInt(const std::string& s)
 
 	return n;
 }
+
+bool Marco::TomlTime::IsWIthinBoundry()
+{
+	if (this->hour > 24)
+	{
+		return false;
+	}
+	else if (this->minute > 60)
+	{
+		return false;
+	}
+	else if (this->second > 60)
+	{
+		return false;
+	}
+	else if (this->millisecond > 999999)
+	{
+		return false;
+	}
+
+	return true;
+}

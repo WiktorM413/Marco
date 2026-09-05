@@ -16,6 +16,8 @@ namespace Marco
 
 		std::string AsString();
 		
+		bool IsWIthinBoundry();
+		
 		unsigned int hour;
 		unsigned int minute;
 		unsigned int second;
