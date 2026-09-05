@@ -7,15 +7,17 @@
 #include <functional>
 #include <variant>
 
-Marco::TomlValue::TomlValue():                       m_value(nullptr)                {}
-Marco::TomlValue::TomlValue(std::nullptr_t):         m_value(nullptr)                {}
-Marco::TomlValue::TomlValue(bool               b):   m_value(b)                      {}
-Marco::TomlValue::TomlValue(double             d):   m_value(d)                      {}
-Marco::TomlValue::TomlValue(int                i):   m_value(static_cast<double>(i)) {}
-Marco::TomlValue::TomlValue(const std::string& s):   m_value(s)                      {}
-Marco::TomlValue::TomlValue(const char*        c):   m_value(c)                      {}
-Marco::TomlValue::TomlValue(TomlArray          arr): m_value(std::move(arr))         {}
-Marco::TomlValue::TomlValue(TomlObject         obj): m_value(std::move(obj))         {}
+Marco::TomlValue::TomlValue():                        m_value(nullptr)                {}
+Marco::TomlValue::TomlValue(std::nullptr_t):          m_value(nullptr)                {}
+Marco::TomlValue::TomlValue(bool               b):    m_value(b)                      {}
+Marco::TomlValue::TomlValue(double             d):    m_value(d)                      {}
+Marco::TomlValue::TomlValue(int                i):    m_value(static_cast<double>(i)) {}
+Marco::TomlValue::TomlValue(const std::string& s):    m_value(s)                      {}
+Marco::TomlValue::TomlValue(const char*        c):    m_value(c)                      {}
+Marco::TomlValue::TomlValue(TomlArray          arr):  m_value(std::move(arr))         {}
+Marco::TomlValue::TomlValue(TomlObject         obj):  m_value(std::move(obj))         {}
+Marco::TomlValue::TomlValue(TomlDate           date): m_value(date)                   {}
+Marco::TomlValue::TomlValue(TomlTime           time): m_value(time)                   {}
 
 bool Marco::TomlValue::IsEmpty() const
 {
@@ -107,7 +109,7 @@ std::expected<std::reference_wrapper<const Marco::TomlArray>, Marco::TomlError> 
 	return std::unexpected(TomlError{TomlErrorType::WrongType, 0});
 }
 
-std::expected<std::reference_wrapper<const Marco::TomlDate>, Marco::TomlError> Marco::TomlValue::AsDate() const
+std::expected<Marco::TomlDate, Marco::TomlError> Marco::TomlValue::AsDate() const
 {
 	if (auto* p = std::get_if<TomlDate>(&this->m_value))
 	{
@@ -117,7 +119,7 @@ std::expected<std::reference_wrapper<const Marco::TomlDate>, Marco::TomlError> M
 	return std::unexpected(TomlError{TomlErrorType::WrongType, 0});
 }
 
-std::expected<std::reference_wrapper<const Marco::TomlTime>, Marco::TomlError> Marco::TomlValue::AsTime() const
+std::expected<Marco::TomlTime, Marco::TomlError> Marco::TomlValue::AsTime() const
 {
 	if (auto* p = std::get_if<TomlTime>(&this->m_value))
 	{

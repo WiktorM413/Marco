@@ -30,6 +30,8 @@ namespace Marco
 		TomlValue(const char* c);
 		TomlValue(TomlArray arr);
 		TomlValue(TomlObject obj);
+		TomlValue(TomlDate date);
+		TomlValue(TomlTime time);
 
 		bool IsEmpty()  const;
 		bool IsBool()   const;
@@ -45,8 +47,8 @@ namespace Marco
 		std::expected<std::reference_wrapper<const std::string>, TomlError> AsString() const;
 		std::expected<std::reference_wrapper<const TomlObject>,  TomlError> AsObject() const;
 		std::expected<std::reference_wrapper<const TomlArray>,   TomlError> AsArray()  const;
-		std::expected<std::reference_wrapper<const TomlDate>,    TomlError> AsDate()   const;
-		std::expected<std::reference_wrapper<const TomlTime>,    TomlError> AsTime()   const;
+		std::expected<TomlDate,                                  TomlError> AsDate()   const;
+		std::expected<TomlTime,                                  TomlError> AsTime()   const;
 
 		TomlValue& PushBack(TomlValue value);
 		
