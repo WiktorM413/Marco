@@ -1,6 +1,8 @@
 #pragma once
 
+#include "marco/toml/TomlDate.h"
 #include "marco/toml/TomlError.h"
+#include "marco/toml/TomlTime.h"
 #include <cstddef>
 #include <expected>
 #include <functional>
@@ -23,11 +25,13 @@ namespace Marco
 		TomlValue(std::nullptr_t);
 		TomlValue(bool b);
 		TomlValue(double d);
-		TomlValue(int i);
+		TomlValue(long l);
 		TomlValue(const std::string& s);
 		TomlValue(const char* c);
 		TomlValue(TomlArray arr);
 		TomlValue(TomlObject obj);
+		TomlValue(TomlDate date);
+		TomlValue(TomlTime time);
 
 		bool IsEmpty()  const;
 		bool IsBool()   const;
@@ -35,12 +39,16 @@ namespace Marco
 		bool IsString() const;
 		bool IsObject() const;
 		bool IsArray()  const;
+		bool IsDate()   const;
+		bool IsTime()   const;
 		
 		std::expected<bool,                                      TomlError> AsBool()   const;
 		std::expected<double,                                    TomlError> AsNumber() const;
 		std::expected<std::reference_wrapper<const std::string>, TomlError> AsString() const;
 		std::expected<std::reference_wrapper<const TomlObject>,  TomlError> AsObject() const;
 		std::expected<std::reference_wrapper<const TomlArray>,   TomlError> AsArray()  const;
+		std::expected<TomlDate,                                  TomlError> AsDate()   const;
+		std::expected<TomlTime,                                  TomlError> AsTime()   const;
 
 		TomlValue& PushBack(TomlValue value);
 		
@@ -56,7 +64,9 @@ namespace Marco
 			double,
 			std::string,
 			TomlObject,
-			TomlArray
+			TomlArray,
+			TomlDate,
+			TomlTime
 		>;
 
 	private:

@@ -8,7 +8,8 @@ namespace Marco
 		NoError,
 		InvalidFormat,
 		WrongType,
-		InvalidNumberFormat
+		InvalidNumberFormat,
+		InvalidDateFormat
 	};
 
 	struct TomlError
