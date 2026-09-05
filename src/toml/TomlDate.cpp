@@ -70,9 +70,14 @@ Marco::TomlError Marco::TomlDate::FromString(const std::string& dateString)
 	}
 
 	this->day = result.value();
-
+	
 	if (dateString.length() == 10) // is exactly YYYY-MM-DD
 	{
+		if (! this->IsWIthinBoundry())
+		{
+			return TomlError{TomlErrorType::InvalidDateFormat, i};
+		}
+		
 		return TomlError{TomlErrorType::NoError, i};
 	}
 
@@ -106,6 +111,11 @@ Marco::TomlError Marco::TomlDate::FromString(const std::string& dateString)
 		
 		this->offsetTimeEnd.FromString(s);
 
+		if (! this->IsWIthinBoundry())
+		{
+			return TomlError{TomlErrorType::InvalidDateFormat, i};
+		}
+
 		return error;
 	}
 	// has to be dateString[i] == '-'
@@ -127,6 +137,11 @@ Marco::TomlError Marco::TomlDate::FromString(const std::string& dateString)
 	}
 
 	error = this->offsetTimeEnd.FromString(s);
+
+	if (! this->IsWIthinBoundry())
+	{
+		return TomlError{TomlErrorType::InvalidDateFormat, i};
+	}
 
 	return error;
 }
@@ -185,26 +200,6 @@ std::string Marco::TomlDate::AsString()
 	return dateString;
 }
 
-std::expected<int, Marco::TomlError> StringToInt(const std::string& s)
-{
-	int n{};
-
-	try
-	{
-		n = std::stoi(s);
-	}
-	catch (const std::invalid_argument&)
-	{
-		return std::unexpected(Marco::TomlError{Marco::TomlErrorType::InvalidDateFormat, 0});
-	}
-	catch (const std::out_of_range&)
-	{
-		return std::unexpected(Marco::TomlError{Marco::TomlErrorType::InvalidDateFormat, 0});
-	}
-
-	return n;
-}
-
 bool Marco::TomlDate::IsWIthinBoundry()
 {
 	if (this->month > 12 || this->month < 1)
@@ -225,4 +220,24 @@ bool Marco::TomlDate::IsWIthinBoundry()
 	}
 
 	return true;
+}
+
+std::expected<int, Marco::TomlError> StringToInt(const std::string& s)
+{
+	int n{};
+
+	try
+	{
+		n = std::stoi(s);
+	}
+	catch (const std::invalid_argument&)
+	{
+		return std::unexpected(Marco::TomlError{Marco::TomlErrorType::InvalidDateFormat, 0});
+	}
+	catch (const std::out_of_range&)
+	{
+		return std::unexpected(Marco::TomlError{Marco::TomlErrorType::InvalidDateFormat, 0});
+	}
+
+	return n;
 }

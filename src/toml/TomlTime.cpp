@@ -58,6 +58,11 @@ Marco::TomlError Marco::TomlTime::FromString(const std::string& dateString)
 
 	if (dateString.length() < 8) // Doesnt have the seconds in HH:MM:SS
 	{
+		if (! this->IsWIthinBoundry())
+		{
+			return TomlError{TomlErrorType::InvalidDateFormat, i};
+		}
+		
 		return TomlError{TomlErrorType::NoError, 0};
 	}
 
@@ -85,6 +90,11 @@ Marco::TomlError Marco::TomlTime::FromString(const std::string& dateString)
 
 	if (dateString.length() == 8)
 	{
+		if (! this->IsWIthinBoundry())
+		{
+			return TomlError{TomlErrorType::InvalidDateFormat, i};
+		}
+		
 		return TomlError{TomlErrorType::NoError, i};
 	}
 
@@ -114,6 +124,11 @@ Marco::TomlError Marco::TomlTime::FromString(const std::string& dateString)
 	}
 
 	this->millisecond = result.value();
+
+	if (! this->IsWIthinBoundry())
+	{
+		return TomlError{TomlErrorType::InvalidDateFormat, i};
+	}
 
 	return TomlError{TomlErrorType::NoError, 0};
 }
@@ -163,26 +178,6 @@ std::string Marco::TomlTime::AsString()
 	return dateString;
 }
 
-std::expected<int, Marco::TomlError> StringToInt(const std::string& s)
-{
-	int n{};
-
-	try
-	{
-		n = std::stoi(s);
-	}
-	catch (const std::invalid_argument&)
-	{
-		return std::unexpected(Marco::TomlError{Marco::TomlErrorType::InvalidDateFormat, 0});
-	}
-	catch (const std::out_of_range&)
-	{
-		return std::unexpected(Marco::TomlError{Marco::TomlErrorType::InvalidDateFormat, 0});
-	}
-
-	return n;
-}
-
 bool Marco::TomlTime::IsWIthinBoundry()
 {
 	if (this->hour > 24)
@@ -203,4 +198,24 @@ bool Marco::TomlTime::IsWIthinBoundry()
 	}
 
 	return true;
+}
+
+std::expected<int, Marco::TomlError> StringToInt(const std::string& s)
+{
+	int n{};
+
+	try
+	{
+		n = std::stoi(s);
+	}
+	catch (const std::invalid_argument&)
+	{
+		return std::unexpected(Marco::TomlError{Marco::TomlErrorType::InvalidDateFormat, 0});
+	}
+	catch (const std::out_of_range&)
+	{
+		return std::unexpected(Marco::TomlError{Marco::TomlErrorType::InvalidDateFormat, 0});
+	}
+
+	return n;
 }
